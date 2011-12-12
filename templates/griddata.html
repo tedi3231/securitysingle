@@ -1,0 +1,29 @@
+<script language="JavaScript" type="text/javascript">
+	$(document).ready(function() {
+		var xsrf = $("input[name=_xsrf]").val();
+		$('#{{tableid}}').datagrid({
+			queryParams : {
+				'_xsrf' : xsrf
+			}
+		});
+	});
+
+</script>
+{{xsrf_form_html()}}
+<div id="search" class="easyui-accordion" collapsed="true">
+	<div title="查询条件" iconCls="icon-search" fit="true">
+		<h3 style="color:#0099FF;">Expand query condition</h3>
+		<p>
+			Accordion is a part of easyui framework for jQuery.
+			It lets you define your accordion component on web page more easily.
+		</p>
+	</div>
+</div>
+<table id="{{tableid}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" pagination="{{pagination}}">
+	<thead>
+		<tr>
+			{% for col in columns %} <th field="{{col['field']}}" width="{{col['width']}}" align="{{col['align']}}">{{col['title']}}</th>
+			{% end %}
+		</tr>
+	</thead>
+</table>

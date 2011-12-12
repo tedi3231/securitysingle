@@ -1,0 +1,25 @@
+<script language="JavaScript" type="text/javascript">
+	$(document).ready(function() {
+		var xsrf = $("input[name=_xsrf]").val();
+		$('#authorstable').datagrid({
+			url:'/authors',
+			queryParams:{'_xsrf':xsrf},
+			columns : [[{
+				field : 'id',
+				title : 'Id',
+				width : 100
+			}, {
+				field : 'name',
+				title : 'Name',
+				width : 100
+			}, {
+				field : 'email',
+				title : 'email',
+				width : 100,
+				align : 'right'
+			}]]
+		});
+	});
+</script>
+{{xsrf_form_html()}}
+<table id="authorstable"></table>

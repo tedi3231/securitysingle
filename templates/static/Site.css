@@ -1,0 +1,246 @@
+﻿/*----------------------------------------------------------
+The base color for this template is #5c87b2. If you'd like
+to use a different color start by replacing all instances of
+#5c87b2 with your new color.
+----------------------------------------------------------*/
+body
+{
+    background-color: #5c87b2;
+    font-size: 75%;
+    font-family: Verdana, Tahoma, Arial, "Helvetica Neue" , Helvetica, Sans-Serif;
+    margin: 0;
+    padding: 0;
+    color: #696969;
+}
+a{ text-decoration:none;}
+a:link
+{
+    color: #034af3;
+    text-decoration: none;
+}
+a:visited
+{
+    color: #505abc;
+}
+a:hover
+{
+    color: #1d60ff;
+    text-decoration: none;
+}
+a:active
+{
+    color: #12eb87;
+}
+
+p, ul
+{
+    margin-bottom: 20px;
+    line-height: 1.6em;
+}
+
+/* HEADINGS   
+----------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6
+{
+    font-size: 1.5em;
+    color: #000;
+}
+
+h1
+{
+    font-size: 2em;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+h2
+{
+    padding: 0 0 10px 0;
+}
+h3
+{
+    font-size: 1.2em;
+}
+h4
+{
+    font-size: 1.1em;
+}
+h5, h6
+{
+    font-size: 1em;
+}
+
+/* this rule styles <h2> tags that are the 
+first child of the left and right table columns */
+.rightColumn > h1, .rightColumn > h2, .leftColumn > h1, .leftColumn > h2
+{
+    margin-top: 0;
+}
+
+
+/* MENU   
+----------------------------------------------------------*/
+#menu a
+{
+    text-decoration: none;
+}
+
+/* FORM LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset
+{
+    border: 1px solid #ddd;
+    padding: 0 1.4em 1.4em 1.4em;
+    margin: 0 0 1.5em 0;
+}
+
+legend
+{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+textarea
+{
+    min-height: 75px;
+    width:200px;
+}
+
+input[type="text"]
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+input[type="text"].combo-text
+{
+    border:0px;
+}
+input[type="text"].pagination-num
+{
+    width:auto;
+}
+
+input[type="password"]
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+select
+{
+    width:205px;
+}
+select.pagination-page-list
+{
+    width:auto;
+}
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors
+{
+    font-weight: bold;
+    color: #ff0000;
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label, .editor-label
+{
+    margin: 1em 0 0 0;
+}
+.display-field, .editor-field
+{
+    margin: 0.5em 0 0 0;
+}
+.display-field
+{
+     border-width:1px;
+     border-style:dotted;
+     border-color:Gray;
+     margin-right:5px;
+     line-height:25px;
+     display:block;
+     height:25px;
+     overflow:hidden;
+}
+.layout-onecolumn
+{
+    float:left;
+    width:250px;
+    height:60px;
+}
+.layout-twocolumn
+{
+    float:left;
+    width:500px;
+    height:60px;
+}
+.layout-threecolumn
+{
+    float:left;
+    width:750px;
+    height:60px;
+}
+.layout-onerow
+{
+    height:60px;
+}
+.layout-tworow
+{
+    height:120px;
+}
+.layout-threerow
+{
+     height:180px;
+}
+.layout-fourrow
+{
+    height:240px;
+}
+.layout-fiverow
+{
+    height:300px;
+}
+.text-box
+{
+    width: 200px;
+}
+
+.text-box.multi-line
+{
+    height: 6.5em;
+}
+.clear
+{
+    clear:both;
+}
+/*******************************************************icons***************************************************/
+.icon-import{
+	background:url('Images/icons/import.gif') no-repeat;
+}
+.icon-select{
+	background:url('Images/icons/select.png') no-repeat;
+}
+.icon-clear{
+	background:url('Images/icons/clear.png') no-repeat;
+}
