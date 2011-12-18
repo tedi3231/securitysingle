@@ -58,7 +58,7 @@ class Application(tornado.web.Application):
             blog_title=u"无锡安全信息专家委員会",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Entry": EntryModule},
+            ui_modules={"Entry": EntryModule,"Search":SearchModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             login_url="/auth/login",
@@ -83,6 +83,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
     
     def griddata(self,tablename):
+        print self.request.arguments
         page = int(self.get_argument("page", 1))-1
         rows = int(self.get_argument("rows",10))
         total = self.db.execute_rowcount(str.format("select * from {0}",tablename))
@@ -112,14 +113,20 @@ class AllHandler(BaseHandler):
 
 class AllAuthorsHandler(BaseHandler):
     def get(self):                
-        self.render("griddata.html", tableid="authors", url="/authors", title="All Authors", rownumbers="true", pagination="true", columns=const.AUTHOR_COLUMNS)        
+        self.render("griddata.html", tableid="authors", url="/authors", 
+                    title="All Authors", rownumbers="true", pagination="true",
+                    columns=const.AUTHOR_COLUMNS,search_columns=const.AUTHOR_SEARCH)        
         
     def post(self):
+	print(self.request.arguments)
         self.write(self.griddata("authors"))
 
 class EntriesHandler(BaseHandler):
     def get(self):
-        self.render("griddata.html", tableid="entries", url="/entries", title="All Entries", rownumbers="true", pagination="true", columns=const.ENTRIES_COLUMNS)        
+        self.render("griddata.html", tableid="entries", 
+        url="/entries", title="All Entries",
+        rownumbers="true", pagination="true", 
+        columns=const.ENTRIES_COLUMNS,search_columns=const.ENTRIES_SEARCH)        
         
     def post(self):
         self.write(self.griddata("entries"))
@@ -225,6 +232,9 @@ class EntryModule(tornado.web.UIModule):
     def render(self, entry):
         return self.render_string("modules/entry.html", entry=entry)
 
+class SearchModule(tornado.web.UIModule):
+   def render(self,model):
+	return self.render_string("modules/search.html",model=model)
 
 def main():
     tornado.options.parse_command_line()
