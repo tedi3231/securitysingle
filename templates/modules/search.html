@@ -1,0 +1,12 @@
+<div style="padding-left:10px;">
+    {%for col in model%}
+    <div class="layout-onecolumn">    
+	    <div calss="editor-label">
+		    {{col["title"]}}
+	    </div>
+	    <div class="editor-field">
+		    <input type="text" id="{{col['name']}}" class="easyui-validdatebox" name="{{col['name']}}" validType="{{col['validType']}}" />
+	    </div>   
+    </div>
+    {% end %}   
+</div>
