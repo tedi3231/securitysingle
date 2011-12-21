@@ -10,8 +10,8 @@ const.AUTHOR_COLUMNS = [
            ]
 
 const.AUTHOR_SEARCH = (
-    {"name":"name","title":"Name","validType":"","operation":"like"},
-    {"name":"email","title":"Email","validType":"email","operation":"like"},    
+    {"name":"name","title":"Name","validType":"","operation":"="},
+    {"name":"email","title":"Email","validType":"email","operation":"="},    
 )
 '''
 Entries table's columns 
@@ -26,6 +26,6 @@ const.ENTRIES_COLUMNS = (
            )
 
 const.ENTRIES_SEARCH = (
-    {"name":"slug","title":"slug","validType":"","operation":"like"},
-    {"name":"title","title":"Title","validType":"","operation":"like"},
+    {"name":"slug","title":"slug","validType":"","operation":"="},
+    {"name":"title","title":"Title","validType":"","operation":"="},
 )

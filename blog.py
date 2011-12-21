@@ -81,13 +81,54 @@ class BaseHandler(tornado.web.RequestHandler):
         user_id = self.get_secure_cookie("user")
         if not user_id: return None
         return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
-    
+
+    def makeWhereCondition(self,tableName):
+        arguments = self.request.arguments
+        columnNames = []
+        columns = []
+        condition = []        
+        if tableName.lower() == "authors":
+            columnNames = [item['name'] for item in const.AUTHOR_SEARCH]
+            columns = const.AUTHOR_SEARCH
+        elif tableName.lower() == "entries":          
+            columnNames = [item['name'] for item in const.ENTRIES_SEARCH]
+            columns = const.ENTRIES_SEARCH       
+        col = {}
+        for arg in arguments:
+            arg = arg.lower().strip()
+            if arg in columnNames:
+                val = arguments[arg][0]
+                if not val.isspace():                    
+                    col = [item for item in columns if item["name"] == arg][0]
+                    if col["operation"] == "like":
+                        condition.append(str.format("AND {0} like '%{1}%'",arg,val))
+                    elif col["operation"] == "=":
+                        condition.append(str.format("AND {0} = '{1}'",arg,val))
+        if len(condition) > 0 :
+            condition.insert(0,"1=1 ")
+        return " ".join(condition)
+
+
     def griddata(self,tablename):
-        print self.request.arguments
+        #print type(self.request.arguments)
+        #print "condition---"
+        condition = self.makeWhereCondition("authors")
+        #print condition
         page = int(self.get_argument("page", 1))-1
         rows = int(self.get_argument("rows",10))
-        total = self.db.execute_rowcount(str.format("select * from {0}",tablename))
-        datarows = self.db.query(str.format("select * from {0} limit {1},{2}",tablename,page*rows,rows))
+        totalQuery = ""
+        rowsQuery = ""
+        #print str.format("|{0}|",condition)
+        if condition.strip()!='':
+            totalQuery = str.format("select * from {0} where {1}",tablename,condition)
+            rowsQuery =  str.format("select * from {0} where {3} limit {1},{2}",tablename,page*rows,rows,condition)
+        else:
+            totalQuery = str.format("select * from {0} ",tablename)
+            rowsQuery =  str.format("select * from {0} limit {1},{2}",tablename,page*rows,rows)
+        print totalQuery, rowsQuery 
+        total = self.db.execute_rowcount(totalQuery)
+        datarows = self.db.query(rowsQuery)
+        print total,datarows
         for item in datarows:
             for k in item:
                 if type(item[k]) is datetime:
