@@ -51,6 +51,7 @@ class Application(tornado.web.Application):
             (r"/entry/([^/]+)", EntryHandler),
             (r"/compose", ComposeHandler),
             (r"/auth/login", AuthLoginHandler),
+            (r"/data/addform",AddFormHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
         settings = dict(
@@ -92,7 +93,8 @@ class BaseHandler(tornado.web.RequestHandler):
             columns = const.AUTHOR_SEARCH
         elif tableName.lower() == "entries":          
             columnNames = [item['name'] for item in const.ENTRIES_SEARCH]
-            columns = const.ENTRIES_SEARCH       
+            columns = const.ENTRIES_SEARCH
+        #print tableName,columnNames,columns       
         col = {}
         for arg in arguments:
             arg = arg.lower().strip()
@@ -112,7 +114,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def griddata(self,tablename):
         #print type(self.request.arguments)
         #print "condition---"
-        condition = self.makeWhereCondition("authors")
+        condition = self.makeWhereCondition(tablename)
         #print condition
         page = int(self.get_argument("page", 1))-1
         rows = int(self.get_argument("rows",10))
@@ -121,14 +123,15 @@ class BaseHandler(tornado.web.RequestHandler):
         #print str.format("|{0}|",condition)
         if condition.strip()!='':
             totalQuery = str.format("select * from {0} where {1}",tablename,condition)
-            rowsQuery =  str.format("select * from {0} where {3} limit {1},{2}",tablename,page*rows,rows,condition)
+            rowsQuery =  str.format("select * from {0} where {3} limit {1},{2}",
+                                    tablename,page*rows,rows,condition)
         else:
             totalQuery = str.format("select * from {0} ",tablename)
             rowsQuery =  str.format("select * from {0} limit {1},{2}",tablename,page*rows,rows)
         print totalQuery, rowsQuery 
         total = self.db.execute_rowcount(totalQuery)
         datarows = self.db.query(rowsQuery)
-        print total,datarows
+        #print total,datarows
         for item in datarows:
             for k in item:
                 if type(item[k]) is datetime:
@@ -137,6 +140,19 @@ class BaseHandler(tornado.web.RequestHandler):
         gd['total'] = total
         gd['rows'] = datarows
         return tornado.escape.json_encode(gd)
+
+class AddFormHandler(BaseHandler):
+    def get(self):
+        tableName = self.get_argument("tablename","")
+        columns = []
+        if tableName == "authors":
+            columns = const.AUTHOR_COLUMNS
+        elif tableName == "entries":
+            columns = const.ENTRIES_COLUMNS
+        self.render("addform.html",columns = columns )
+
+    def post(self):
+        pass
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -159,7 +175,7 @@ class AllAuthorsHandler(BaseHandler):
                     columns=const.AUTHOR_COLUMNS,search_columns=const.AUTHOR_SEARCH)        
         
     def post(self):
-	print(self.request.arguments)
+    	print(self.request.arguments)
         self.write(self.griddata("authors"))
 
 class EntriesHandler(BaseHandler):
@@ -170,6 +186,7 @@ class EntriesHandler(BaseHandler):
         columns=const.ENTRIES_COLUMNS,search_columns=const.ENTRIES_SEARCH)        
         
     def post(self):
+        print self.request.arguments
         self.write(self.griddata("entries"))
         
         
