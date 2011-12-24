@@ -1,0 +1,4 @@
+<form id="{{tableName}}_add" method="post" action="/data/create" >
+    <input type="hidden" name="tablename" id="tablename" value="{{tableName}}" />
+    {{ modules.Entity(columns) }}
+</form>

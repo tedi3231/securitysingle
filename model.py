@@ -6,11 +6,11 @@ Authors table's columns
 const.AUTHOR_COLUMNS = [
             Column('name', 'First Name', "100", "left"),
             Column('email', 'Email', "100", "left"),
-            Column('id', 'ID', "100", "left")
+            Column('id', 'ID', "100", "left",True)
            ]
 
 const.AUTHOR_SEARCH = (
-    {"name":"name","title":"Name","validType":"","operation":"="},
+    {"name":"name","title":"Name","validType":"","operation":"like"},
     {"name":"email","title":"Email","validType":"email","operation":"="},    
 )
 '''

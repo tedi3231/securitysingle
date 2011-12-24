@@ -1,5 +1,27 @@
 <script language="JavaScript" type="text/javascript">
  
+    function create(){
+        //alert("abc");
+        //alert( $("#dialog_{{tableid}} form#{{tableid}}_add").serializeObject());
+        $.post("/data/create",
+            $("#dialog_{{tableid}} form#{{tableid}}_add").serializeObject(),
+            function(data){
+                //alert(data);
+                //alert(data.result);
+                //data = eval(data);
+                //alert(data.result);
+                if(data.result=="success"){
+                    $("#dialog_{{tableid}}").dialog("close");
+                    $("div#search_{{tableid}} #asearch").click();
+                }else{
+                    $.messager.alert('error','create data failed');  
+                }
+            },
+            "json"
+        );
+        return false;
+    }
+
     $(document).ready(function() {
         $("#toolbar_{{tableid}}_add").click(function(){
             var dialogId = "dialog_{{tableid}}";
@@ -12,28 +34,42 @@
 				'_xsrf' : $("input[name=_xsrf]").val()
 			}
 		});
-
-        $("form#search_{{tableid}}").submit(function(){
-            $("#{{tableid}}").datagrid("reload",$("form").serializeObject());
+        
+        $("div#search_{{tableid}} #asearch").click(function(){
+            $("#{{tableid}}").datagrid("reload",$("div#search_{{tableid}} form").serializeObject());
             return false;
         });
+
+        $("#{{tableid}}_btn_add").bind("click",create);
+       
 	});
 </script>
-<div id="search" class="easyui-accordion" collapsed="true">
-	<div title="查询条件" iconCls="icon-search" fit="true" style="float:left;">
-        <form action="{{url}}" method="post" id="search_{{tableid}}">
-            {{xsrf_form_html()}}
-            {{modules.Search(search_columns)}}
-            <input type="submit" name="Submit" value="Search"/>    
+
+<!-- search form start -->
+<div id="search_{{tableid}}" class="easyui-accordion" collapsed="true">
+	<div title="查询条件" iconCls="icon-search">
+        <form action="{{url}}" method="post" id="search">
+            <div>
+                {{xsrf_form_html()}}
+                {{modules.Search(search_columns)}}
+            </div>
+            <div style="padding-top:20px;">          
+                <a id="asearch" href="#" iconCls="icon-search" plain="true" 
+                   class="easyui-linkbutton">查询</a>	    
+            </div>
         </form>
-	</div>    
+	</div>
 </div>
+<!-- search form end -->
+
+<!-- gridview start -->
 <table id="{{tableid}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" 
        pagination="{{pagination}}" toolbar="#toolbar_{{tableid}}">
 	<thead>
 		<tr>
 			{% for col in columns %} 
-                <th field="{{col['field']}}" width="{{col['width']}}" align="{{col['align']}}">{{col['title']}}</th>
+                <th field="{{col['field']}}" width="{{col['width']}}" 
+                    align="{{col['align']}}">{{col['title']}}</th>
 			{% end %}
 		</tr>
 	</thead>
@@ -43,12 +79,15 @@
     <a herf="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
     <a herf="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="">删除</a>
 </div>
+<!-- gridview end -->
 
+<!-- add dialog start -->
 <div id="dialog_{{tableid}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
      title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{tableid}}_buttons" closed="true" 
-     href="/data/addform?tablename={{tableid}}">    
+     href="/data/create?tablename={{tableid}}">
 </div>
 <div id="dlg_{{tableid}}_buttons">  
-    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="javascript:alert('Ok')">提交</a>  
+    <a id="{{tableid}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>  
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{tableid}}').dialog('close')">取消</a>
 </div>
+<!-- add dialog end -->

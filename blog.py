@@ -43,15 +43,10 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", HomeHandler),
-            (r"/archive", ArchiveHandler),
-            (r"/feed", FeedHandler),
-            (r"/all", AllHandler),
-            (r"/authors", AllAuthorsHandler),
-            (r"/entries", EntriesHandler),
-            (r"/entry/([^/]+)", EntryHandler),
-            (r"/compose", ComposeHandler),
+            (r"/author/list", AllAuthorsHandler),
+            (r"/entry/list", EntriesHandler),
+            (r"/data/create",CreateFormHandler),
             (r"/auth/login", AuthLoginHandler),
-            (r"/data/addform",AddFormHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
         settings = dict(
@@ -59,7 +54,7 @@ class Application(tornado.web.Application):
             blog_title=u"无锡安全信息专家委員会",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Entry": EntryModule,"Search":SearchModule},
+            ui_modules={"Entry": EntryModule,"Search":SearchModule,"Entity":EntityModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             login_url="/auth/login",
@@ -77,6 +72,9 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def db(self):
         return self.application.db
+    
+    def filterSaveColumns(self,columns):
+        return tuple([item['name'] for item in const.AUTHOR_SEARCH])        
 
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
@@ -103,7 +101,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 if not val.isspace():                    
                     col = [item for item in columns if item["name"] == arg][0]
                     if col["operation"] == "like":
-                        condition.append(str.format("AND {0} like '%{1}%'",arg,val))
+                        condition.append(str.format("AND {0} like '%%{1}%%'",arg,val))
                     elif col["operation"] == "=":
                         condition.append(str.format("AND {0} = '{1}'",arg,val))
         if len(condition) > 0 :
@@ -141,18 +139,41 @@ class BaseHandler(tornado.web.RequestHandler):
         gd['rows'] = datarows
         return tornado.escape.json_encode(gd)
 
-class AddFormHandler(BaseHandler):
-    def get(self):
+class CreateFormHandler(BaseHandler):
+    def getTableAndColumns( self ):
         tableName = self.get_argument("tablename","")
         columns = []
         if tableName == "authors":
             columns = const.AUTHOR_COLUMNS
         elif tableName == "entries":
             columns = const.ENTRIES_COLUMNS
-        self.render("addform.html",columns = columns )
+        return (tableName,columns)
+
+    def get(self):
+        tableName,columns = self.getTableAndColumns()       
+        self.render("create.html",columns = columns,tableName=tableName )
 
     def post(self):
-        pass
+        #print self.request.arguments
+        #print "create post"
+        tableName,columns = self.getTableAndColumns()
+        columns = [item for item in columns if item['noscaler']==False]
+        colnames = [item['field'] for item in columns]
+        arguments = self.request.arguments
+        #sqllist = [str.format("insert into {0}({1})values",tableName,",".join([item['field'] for item in columns]))]
+        #print sqllist
+        vals = {}
+        for key in arguments:
+            if key in colnames:
+                vals[key] = arguments[key][0]
+                #vals.append({key:arguments[key][0]})
+        sql = str.format("insert into {0}({1})values({2})",tableName,",".join(vals.keys()),",".join([str.format("'{0}'",item) for item in vals.values()]))
+
+        result = {"result":"success"}
+        if self.db.execute(sql) <0 :
+            result["result"]='failed'
+        print result
+        self.write(tornado.escape.json_encode(result))
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -163,14 +184,9 @@ class HomeHandler(BaseHandler):
             return
         self.render("home.html", entries=entries)
 
-class AllHandler(BaseHandler):
-    def get(self):
-        entries = self.db.query("SELECT * FROM entries ORDER BY published ")       
-        self.render("home.html", entries=entries)   
-
 class AllAuthorsHandler(BaseHandler):
     def get(self):                
-        self.render("griddata.html", tableid="authors", url="/authors", 
+        self.render("griddata.html", tableid="authors", url="/author/list", 
                     title="All Authors", rownumbers="true", pagination="true",
                     columns=const.AUTHOR_COLUMNS,search_columns=const.AUTHOR_SEARCH)        
         
@@ -178,77 +194,17 @@ class AllAuthorsHandler(BaseHandler):
     	print(self.request.arguments)
         self.write(self.griddata("authors"))
 
+
 class EntriesHandler(BaseHandler):
     def get(self):
         self.render("griddata.html", tableid="entries", 
-        url="/entries", title="All Entries",
+        url="/entry/list", title="All Entries",
         rownumbers="true", pagination="true", 
         columns=const.ENTRIES_COLUMNS,search_columns=const.ENTRIES_SEARCH)        
         
     def post(self):
         print self.request.arguments
-        self.write(self.griddata("entries"))
-        
-        
-class EntryHandler(BaseHandler):
-    def get(self, slug):
-        entry = self.db.get("SELECT * FROM entries WHERE slug = %s", slug)
-        if not entry: raise tornado.web.HTTPError(404)
-        self.render("entry.html", entry=entry)
-
-
-class ArchiveHandler(BaseHandler):
-    def get(self):
-        entries = self.db.query("SELECT * FROM entries ORDER BY published "
-                                "DESC")
-        self.render("archive.html", entries=entries)
-
-
-class FeedHandler(BaseHandler):
-    def get(self):
-        entries = self.db.query("SELECT * FROM entries ORDER BY published "
-                                "DESC LIMIT 10")
-        self.set_header("Content-Type", "application/atom+xml")
-        self.render("feed.xml", entries=entries)
-
-
-class ComposeHandler(BaseHandler):
-    @tornado.web.authenticated
-    def get(self):
-        id = self.get_argument("id", None)
-        entry = None
-        if id:
-            entry = self.db.get("SELECT * FROM entries WHERE id = %s", int(id))
-        self.render("compose.html", entry=entry)
-
-    @tornado.web.authenticated
-    def post(self):
-        id = self.get_argument("id", None)
-        title = self.get_argument("title")
-        text = self.get_argument("markdown")
-        html = markdown.markdown(text)
-        if id:
-            entry = self.db.get("SELECT * FROM entries WHERE id = %s", int(id))
-            if not entry: raise tornado.web.HTTPError(404)
-            slug = entry.slug
-            self.db.execute(
-                "UPDATE entries SET title = %s, markdown = %s, html = %s "
-                "WHERE id = %s", title, text, html, int(id))
-        else:
-            slug = unicodedata.normalize("NFKD", title).encode(
-                "ascii", "ignore")
-            slug = re.sub(r"[^\w]+", " ", slug)
-            slug = "-".join(slug.lower().strip().split())
-            if not slug: slug = "entry"
-            while True:
-                e = self.db.get("SELECT * FROM entries WHERE slug = %s", slug)
-                if not e: break
-                slug += "-2"
-            self.db.execute(
-                "INSERT INTO entries (author_id,title,slug,markdown,html,"
-                "published) VALUES (%s,%s,%s,%s,%s,UTC_TIMESTAMP())",
-                self.current_user.id, title, slug, text, html)
-        self.redirect("/entry/" + slug)
+        self.write(self.griddata("entries"))      
 
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
@@ -285,14 +241,26 @@ class AuthLogoutHandler(BaseHandler):
         self.clear_cookie("user")
         self.redirect(self.get_argument("next", "/"))
 
-
 class EntryModule(tornado.web.UIModule):
     def render(self, entry):
         return self.render_string("modules/entry.html", entry=entry)
 
+'''
+for generate search form
+'''
 class SearchModule(tornado.web.UIModule):
-   def render(self,model):
-	return self.render_string("modules/search.html",model=model)
+    def render(self,model):
+        return self.render_string("modules/search.html",model=model)
+
+'''
+for generate form
+'''
+class EntityModule(tornado.web.UIModule):
+    def render(self,columns):
+        #filter the column which need't save to database
+        columns = tuple([item for item in columns if item['noscaler']==False])
+        #print columns 
+        return self.render_string("modules/entity.html",columns=columns )
 
 def main():
     tornado.options.parse_command_line()

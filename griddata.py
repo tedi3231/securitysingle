@@ -16,15 +16,16 @@ class Column(dict):
     def __init__(self):
         pass
     
-    def __init__(self, field, title, width=100, align="left"):
+    def __init__(self, field, title, width=100, align="left",noscaler=False):
         self['field'] = field
         self['title'] = title
         self['width'] = width
         self['align'] = align
+        self['noscaler'] = noscaler
         
     def __setitem__(self, key, value):
-        if not key in ('field', 'title', 'width', 'align'):
-            raise KeyError('must be field,title,width,align')
+        if not key in ('field', 'title', 'width', 'align','noscaler'):
+            raise KeyError('must be field,title,width,align,noscaler')
         dict.__setitem__(self, key, value)
         
     def __repr__(self):       
