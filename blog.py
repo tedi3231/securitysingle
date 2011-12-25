@@ -31,6 +31,7 @@ from tornado.options import define, options
 from datetime import datetime
 import model
 import const
+import entity
 
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="blog database host")
@@ -66,7 +67,7 @@ class Application(tornado.web.Application):
         self.db = tornado.database.Connection(
             host=options.mysql_host, database=options.mysql_database,
             user=options.mysql_user, password=options.mysql_password)
-
+        entity.db = self.db
 
 class BaseHandler(tornado.web.RequestHandler):
     @property
@@ -154,25 +155,21 @@ class CreateFormHandler(BaseHandler):
         self.render("create.html",columns = columns,tableName=tableName )
 
     def post(self):
-        #print self.request.arguments
-        #print "create post"
         tableName,columns = self.getTableAndColumns()
         columns = [item for item in columns if item['noscaler']==False]
         colnames = [item['field'] for item in columns]
         arguments = self.request.arguments
-        #sqllist = [str.format("insert into {0}({1})values",tableName,",".join([item['field'] for item in columns]))]
-        #print sqllist
         vals = {}
         for key in arguments:
             if key in colnames:
                 vals[key] = arguments[key][0]
-                #vals.append({key:arguments[key][0]})
-        sql = str.format("insert into {0}({1})values({2})",tableName,",".join(vals.keys()),",".join([str.format("'{0}'",item) for item in vals.values()]))
-
+        
+        sql = str.format("insert into {0}({1})values({2})",tableName,",".join(vals.keys()),",".join(["%s"]*len(vals.keys())))
+        #print sql        
         result = {"result":"success"}
-        if self.db.execute(sql) <0 :
+        if self.db.execute(sql,*vals.values()) <0 :
             result["result"]='failed'
-        print result
+        #print result
         self.write(tornado.escape.json_encode(result))
 
 class HomeHandler(BaseHandler):
