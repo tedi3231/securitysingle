@@ -1,7 +1,7 @@
 #coding=utf8
 
 class Column(object):
-    def __init__(self,field,title,width=100,align="left",control="text",easyclass="",source=None,formatter=None):
+    def __init__(self,field,title,width=100,align="left",control="text",easyclass="",source=None,formatter=None,defaultvalue=None):
 	"""
 	source is a method,like source(list,textname,valuename),and the list like [{'text':'name','value':'abc'},..]
 	"""
@@ -11,35 +11,52 @@ class Column(object):
 	self.align = align
 	self.control = control
 	self.easyclass=easyclass
-	self.source = None
+	self.source = source
 	self.formatter = formatter
-
+	self.defaultvalue = defaultvalue
 
     def __repr__(self):
 	vals = self.__dict__
-	keys = [item for item in vals if item not in ('easyclass','control',"source","formatter",) ]	
+	keys = [item for item in vals if item not in ('easyclass','control',"source","formatter",'defaultvalue') ]	
 	strList = []
 	
 	if vals['control'] == 'text':
 	    strList.append("<input ")
 	    strList.append(str.format("type='{0}'",'text'))
+	    if vals['defaultvalue']:
+		strList.append(str.format("value='{0}'",vals['defaultvalue']))
 	elif vals['control'] == 'select':
 	    strList.append("<select ")	   
 
 	strList.extend(str.format("id='{0}'",vals['field']))	
 	strList.extend( [str.format("{0}='{1}'",key,self.__dict__[key]) for key in keys] )
-
+	if vals['easyclass']:
+	    strList.append(str.format("class='{0}'",vals['easyclass']))
 	if vals['control'] == 'text':
 	    strList.append(" />")
 	elif vals['control'] == 'select':
 	    strList.append(">")
-	    #if vals['source'] :	
-	    strList.append("</select>")	
-	
+	if vals['source']:
+	    #print 'have source '
+	    #print vals['source']
+	    rows = vals['source']['rows']
+	    valuename = vals['source']['valuename']
+	    valuetext = vals['source']['valuetext']
+	    for row in rows:
+		#print 'defaultvalue' + vals['defaultvalue']
+		#print 'row value' + row[valuetext]
+	        strList.append(str.format("<option value='{0}' {2}>{1}</option>",row[valuename],row[valuetext],
+					  "selected" if row[valuename]==vals['defaultvalue'] else ''))	
+	    strList.append("</select>")		
 	return " ".join(strList)
 
+
 if __name__ == "__main__":
-	c = Column("name","Firtname")
-	c2 = Column("authors","Choose Authors",control="select")
-	print c
-	print c2
+	#c = Column("name","Firtname")
+	#c2 = Column("authors","Choose Authors",control="select")
+	rows = [{"name":"pancy","title":"test1"},{"name":"tedi3231","title":"test2"}]
+	d1 = {"rows":rows,"valuename":"name","valuetext":"title"}
+	c3 = Column("authors","Choose Authors", control = "select",easyclass="combox",source = d1,defaultvalue='tedi3231' )
+	#print c
+	#print c2
+	print c3
