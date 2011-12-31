@@ -1,0 +1,11 @@
+{{column}}
+{% if column['noscaler'] ==False %}
+<div class="layout-onecolumn">
+    <div class="editor-label">
+        <span>{{column["title"]}}</span>
+    </div>
+    <div class="editor-field">
+        <input type="text" value="" id="{{column['field']}}" name="{{column['field']}}" />
+    </div>
+</div>
+{% end %}
