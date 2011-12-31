@@ -16,22 +16,34 @@ class Column(dict):
     def __init__(self):
         pass
     
-    def __init__(self, field, title, width=100, align="left",noscaler=False):
+    def __init__(self, field, title, width=100, align="left",control="text",controlclass=None,source = None,noscaler=False):
         self['field'] = field
         self['title'] = title
         self['width'] = width
         self['align'] = align
+        self['control'] = control
+        self['source'] = source
         self['noscaler'] = noscaler
+        self['controlclass'] = controlclass
         
     def __setitem__(self, key, value):
-        if not key in ('field', 'title', 'width', 'align','noscaler'):
-            raise KeyError('must be field,title,width,align,noscaler')
+        if not key in ('field', 'title', 'width', 'align','control','source','noscaler'):
+            raise KeyError('must be field,title,width,align,control,source,noscaler')
         dict.__setitem__(self, key, value)
         
     def __repr__(self):       
         sList = []
-        for k in self:
+        attrs = [item for item in self if item not in ('source','noscaler')]
+        print attrs
+    
+        if self['control'] == 'text':
+            sList.append(str.format("<input type='text' class={0} ",self['controlclass']))
+        elif self['control'] == 'select':
+            sList.append(str.format("<select type="))
+            
+        for k in attrs:
             sList.append(str.format("{0}='{1}'", k, self[k]))
+        sList.append(" />")
         return " ".join(sList)
 
 def toGridViewHtml(tableid, url, title, columns, xsrf, width=500, height=500, pagination="true", rownumbers="true"):

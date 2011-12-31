@@ -2,17 +2,17 @@
  
     function create(){
         //alert("abc");
-        //alert( $("#dialog_{{tableid}} form#{{tableid}}_add").serializeObject());
+        //alert( $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject());
         $.post("/data/create",
-            $("#dialog_{{tableid}} form#{{tableid}}_add").serializeObject(),
+            $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(),
             function(data){
                 //alert(data);
                 //alert(data.result);
                 //data = eval(data);
                 //alert(data.result);
                 if(data.result=="success"){
-                    $("#dialog_{{tableid}}").dialog("close");
-                    $("div#search_{{tableid}} #asearch").click();
+                    $("#dialog_{{entityname}}").dialog("close");
+                    $("div#search_{{entityname}} #asearch").click();
                 }else{
                     $.messager.alert('error','create data failed');  
                 }
@@ -23,30 +23,30 @@
     }
 
     $(document).ready(function() {
-        $("#toolbar_{{tableid}}_add").click(function(){
-            var dialogId = "dialog_{{tableid}}";
+        $("#toolbar_{{entityname}}_add").click(function(){
+            var dialogId = "dialog_{{entityname}}";
             $("#"+dialogId).dialog("open","true");
             return false;
         });
 
-		$('#{{tableid}}').datagrid({
+		$('#{{entityname}}').datagrid({
 			queryParams : {
 				'_xsrf' : $("input[name=_xsrf]").val()
 			}
 		});
         
-        $("div#search_{{tableid}} #asearch").click(function(){
-            $("#{{tableid}}").datagrid("reload",$("div#search_{{tableid}} form").serializeObject());
+        $("div#search_{{entityname}} #asearch").click(function(){
+            $("#{{entityname}}").datagrid("reload",$("div#search_{{entityname}} form").serializeObject());
             return false;
         });
 
-        $("#{{tableid}}_btn_add").bind("click",create);
+        $("#{{entityname}}_btn_add").bind("click",create);
        
 	});
 </script>
 
 <!-- search form start -->
-<div id="search_{{tableid}}" class="easyui-accordion" collapsed="true">
+<div id="search_{{entityname}}" class="easyui-accordion" collapsed="true">
 	<div title="查询条件" iconCls="icon-search">
         <form action="{{url}}" method="post" id="search">
             <div>
@@ -63,8 +63,8 @@
 <!-- search form end -->
 
 <!-- gridview start -->
-<table id="{{tableid}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" 
-       pagination="{{pagination}}" toolbar="#toolbar_{{tableid}}">
+<table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" 
+       pagination="{{pagination}}" toolbar="#toolbar_{{entityname}}">
 	<thead>
 		<tr>
 			{% for col in columns %} 
@@ -74,20 +74,20 @@
 		</tr>
 	</thead>
 </table>
-<div id="toolbar_{{tableid}}">
-    <a herf="#" id="toolbar_{{tableid}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+<div id="toolbar_{{entityname}}">
+    <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
     <a herf="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
     <a herf="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="">删除</a>
 </div>
 <!-- gridview end -->
 
 <!-- add dialog start -->
-<div id="dialog_{{tableid}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
-     title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{tableid}}_buttons" closed="true" 
-     href="/data/create?tablename={{tableid}}">
+<div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
+     title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true" 
+     href="/data/create?entityname={{entityname}}">
 </div>
-<div id="dlg_{{tableid}}_buttons">  
-    <a id="{{tableid}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>  
-    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{tableid}}').dialog('close')">取消</a>
+<div id="dlg_{{entityname}}_buttons">  
+    <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>  
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
 </div>
 <!-- add dialog end -->

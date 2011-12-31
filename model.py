@@ -4,9 +4,9 @@ import const
 Authors table's columns
 '''
 const.AUTHOR_COLUMNS = [
-            Column('name', 'First Name', "100", "left"),
-            Column('email', 'Email', "100", "left"),
-            Column('id', 'ID', "100", "left",True)
+            Column('name', 'First Name', "100", "left","text",None,None,False),
+            Column('email', 'Email', "100", "left","text","combox",None,False),
+            Column('id', 'ID', "100", "left","text",None,None,True)
            ]
 
 const.AUTHOR_SEARCH = (

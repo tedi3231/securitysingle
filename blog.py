@@ -55,7 +55,7 @@ class Application(tornado.web.Application):
             blog_title=u"无锡安全信息专家委員会",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Entry": EntryModule,"Search":SearchModule,"Entity":EntityModule},
+            ui_modules={"Entry": EntryModule,"Search":SearchModule,"Entity":EntityModule,"Column":ColumnModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             login_url="/auth/login",
@@ -74,67 +74,13 @@ class BaseHandler(tornado.web.RequestHandler):
     def db(self):
         return self.application.db
     
-    def filterSaveColumns(self,columns):
-        return tuple([item['name'] for item in const.AUTHOR_SEARCH])        
-
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
         if not user_id: return None
         return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
 
-    def makeWhereCondition(self,tableName):
-        arguments = self.request.arguments
-        columnNames = []
-        columns = []
-        condition = []        
-        if tableName.lower() == "authors":
-            columnNames = [item['name'] for item in const.AUTHOR_SEARCH]
-            columns = const.AUTHOR_SEARCH
-        elif tableName.lower() == "entries":          
-            columnNames = [item['name'] for item in const.ENTRIES_SEARCH]
-            columns = const.ENTRIES_SEARCH
-        #print tableName,columnNames,columns       
-        col = {}
-        for arg in arguments:
-            arg = arg.lower().strip()
-            if arg in columnNames:
-                val = arguments[arg][0]
-                if not val.isspace():                    
-                    col = [item for item in columns if item["name"] == arg][0]
-                    if col["operation"] == "like":
-                        condition.append(str.format("AND {0} like '%%{1}%%'",arg,val))
-                    elif col["operation"] == "=":
-                        condition.append(str.format("AND {0} = '{1}'",arg,val))
-        if len(condition) > 0 :
-            condition.insert(0,"1=1 ")
-        return " ".join(condition)
-
-
-    def griddata(self,tablename):
-        #print type(self.request.arguments)
-        #print "condition---"
-        condition = self.makeWhereCondition(tablename)
-        #print condition
-        page = int(self.get_argument("page", 1))-1
-        rows = int(self.get_argument("rows",10))
-        totalQuery = ""
-        rowsQuery = ""
-        #print str.format("|{0}|",condition)
-        if condition.strip()!='':
-            totalQuery = str.format("select * from {0} where {1}",tablename,condition)
-            rowsQuery =  str.format("select * from {0} where {3} limit {1},{2}",
-                                    tablename,page*rows,rows,condition)
-        else:
-            totalQuery = str.format("select * from {0} ",tablename)
-            rowsQuery =  str.format("select * from {0} limit {1},{2}",tablename,page*rows,rows)
-        print totalQuery, rowsQuery 
-        total = self.db.execute_rowcount(totalQuery)
-        datarows = self.db.query(rowsQuery)
-        #print total,datarows
-        for item in datarows:
-            for k in item:
-                if type(item[k]) is datetime:
-                    item[k] = item[k].strftime("%Y-%m-%d")
+    def griddata(self,entityName):
+        total,datarows = entity.query(entityName,self.request.arguments)
         gd = GridData()
         gd['total'] = total
         gd['rows'] = datarows
@@ -142,34 +88,17 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class CreateFormHandler(BaseHandler):
     def getTableAndColumns( self ):
-        tableName = self.get_argument("tablename","")
-        columns = []
-        if tableName == "authors":
-            columns = const.AUTHOR_COLUMNS
-        elif tableName == "entries":
-            columns = const.ENTRIES_COLUMNS
-        return (tableName,columns)
+        entityname = self.get_argument("entityname","")       
+        columns = const.entities[entityname]["columns"]     
+        return (entityname,columns)
 
     def get(self):
-        tableName,columns = self.getTableAndColumns()       
-        self.render("create.html",columns = columns,tableName=tableName )
+        entityname,columns = self.getTableAndColumns()
+        self.render("create.html",columns = columns,entityname=entityname )
 
     def post(self):
-        tableName,columns = self.getTableAndColumns()
-        columns = [item for item in columns if item['noscaler']==False]
-        colnames = [item['field'] for item in columns]
-        arguments = self.request.arguments
-        vals = {}
-        for key in arguments:
-            if key in colnames:
-                vals[key] = arguments[key][0]
-        
-        sql = str.format("insert into {0}({1})values({2})",tableName,",".join(vals.keys()),",".join(["%s"]*len(vals.keys())))
-        #print sql        
-        result = {"result":"success"}
-        if self.db.execute(sql,*vals.values()) <0 :
-            result["result"]='failed'
-        #print result
+        entityname = self.get_argument("entityname","")
+        result = entity.createEntity(entityname,self.request.arguments)
         self.write(tornado.escape.json_encode(result))
 
 class HomeHandler(BaseHandler):
@@ -183,25 +112,23 @@ class HomeHandler(BaseHandler):
 
 class AllAuthorsHandler(BaseHandler):
     def get(self):                
-        self.render("griddata.html", tableid="authors", url="/author/list", 
+        self.render("griddata.html", entityname="author", url="/author/list", 
                     title="All Authors", rownumbers="true", pagination="true",
                     columns=const.AUTHOR_COLUMNS,search_columns=const.AUTHOR_SEARCH)        
         
     def post(self):
-    	print(self.request.arguments)
-        self.write(self.griddata("authors"))
+        self.write(self.griddata("author"))
 
 
 class EntriesHandler(BaseHandler):
     def get(self):
-        self.render("griddata.html", tableid="entries", 
+        self.render("griddata.html", entityname="entry", 
         url="/entry/list", title="All Entries",
         rownumbers="true", pagination="true", 
         columns=const.ENTRIES_COLUMNS,search_columns=const.ENTRIES_SEARCH)        
         
-    def post(self):
-        print self.request.arguments
-        self.write(self.griddata("entries"))      
+    def post(self):        
+        self.write(self.griddata("entry"))
 
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
@@ -258,6 +185,10 @@ class EntityModule(tornado.web.UIModule):
         columns = tuple([item for item in columns if item['noscaler']==False])
         #print columns 
         return self.render_string("modules/entity.html",columns=columns )
+
+class ColumnModule(tornado.web.UIModule):
+    def render(self,column):
+        return self.render_string("modules/column.html",column=column)
 
 def main():
     tornado.options.parse_command_line()

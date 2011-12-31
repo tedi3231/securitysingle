@@ -1,11 +1,4 @@
 {{xsrf_form_html()}}
 {%for col in columns%}
-    <div class="layout-onecolumn">
-        <div class="editor-label">
-            <span>{{col["title"]}}</span>
-        </div>
-        <div class="editor-field">
-            <input type="text" value="" id="{{col['field']}}" name="{{col['field']}}" />
-        </div>
-    </div>
+    {{modules.Column(col)}}
 {% end %}
