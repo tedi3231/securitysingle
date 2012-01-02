@@ -25,10 +25,9 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import unicodedata
-from griddata import Column, toGridViewHtml, GridData
-
 from tornado.options import define, options
 from datetime import datetime
+from schema import Column,GridData
 import model
 import const
 import entity
@@ -47,6 +46,7 @@ class Application(tornado.web.Application):
             (r"/author/list", AllAuthorsHandler),
             (r"/entry/list", EntriesHandler),
             (r"/data/create",CreateFormHandler),
+            (r"/data/remove",RemoveHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
@@ -86,14 +86,22 @@ class BaseHandler(tornado.web.RequestHandler):
         gd['rows'] = datarows
         return tornado.escape.json_encode(gd)
 
+class RemoveHandler(BaseHandler):
+    def post(self):
+        entityname = self.get_argument("entityname","")       
+        entityId = self.get_argument("id","0")
+        print entityname,entityId
+        result = entity.removeEntity(entityname,entityId)
+        self.write(tornado.escape.json_encode(result))
+
 class CreateFormHandler(BaseHandler):
-    def getTableAndColumns( self ):
+    def getEntityNameAndColumns( self ):
         entityname = self.get_argument("entityname","")       
         columns = const.entities[entityname]["columns"]     
         return (entityname,columns)
 
     def get(self):
-        entityname,columns = self.getTableAndColumns()
+        entityname,columns = self.getEntityNameAndColumns()
         self.render("create.html",columns = columns,entityname=entityname )
 
     def post(self):
@@ -103,12 +111,7 @@ class CreateFormHandler(BaseHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        entries = self.db.query("SELECT * FROM entries ORDER BY published "
-                                "DESC LIMIT 5")
-        if not entries:
-            self.redirect("/compose")
-            return
-        self.render("home.html", entries=entries)
+        self.render("home.html")
 
 class AllAuthorsHandler(BaseHandler):
     def get(self):                
@@ -182,7 +185,7 @@ for generate form
 class EntityModule(tornado.web.UIModule):
     def render(self,columns):
         #filter the column which need't save to database
-        columns = tuple([item for item in columns if item['noscaler']==False])
+        #columns = tuple([item for item in columns if item['noscaler']==False])
         #print columns 
         return self.render_string("modules/entity.html",columns=columns )
 

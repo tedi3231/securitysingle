@@ -20,14 +20,14 @@ def _checkTable(entityName):
     return result
 
 def _getColumnNamesAndTableName(entityName):
-    return [item['field'] for item in const.entities[entityName]["columns"] if item["noscaler"]==False],const.entities[entityName]["tablename"]
+    return [item.field for item in const.entities[entityName]["columns"]],const.entities[entityName]["tablename"]
 
 def _makeRemoveSql(entityName,entityId):
     tableName = const.entities[entityName]["tablename"]
     return str.format("DELETE FROM {0} WHERE id = {1}",tableName,entityId)
 
 def _makeInsertSql(entityName,arguments):
-    columnNames,tableName = _getColumnNamesAndTableName(entityName)   
+    columnNames,tableName = _getColumnNamesAndTableName(entityName)  
     vals = {}
     for key in arguments:
         if key in columnNames:
@@ -91,7 +91,7 @@ def removeEntity(entityName,entityId):
     result = _checkTable(entityName)
     if result["result"] != "success":
         return result
-    removeSql = _makeRemoveSql("author",entityId)
+    removeSql = _makeRemoveSql(entityName,entityId)
     if db.execute(removeSql)<0:
         result["result"] = "error"        
     return result
@@ -129,4 +129,4 @@ if __name__ == "__main__":
     #print _makeUpdateSql("author",{"name":["chyyy"],"email":["chy234@ks.com"],"id":[1]})
     #print editEntity("author",{"name":["addddd"],"email":["chy11111@ks.com"],"id":[2]})
     #print(_makeWhereCondition("author",{'name':['pancy']}))
-    query("author",{"page":['1'],"rows":['10']})
+    print query("author",{"page":['1'],"rows":['10']})

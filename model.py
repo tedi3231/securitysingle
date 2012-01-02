@@ -1,12 +1,13 @@
-from griddata import Column
+#from griddata import Column
+from schema import Column
 import const
 '''
 Authors table's columns
 '''
 const.AUTHOR_COLUMNS = [
-            Column('name', 'First Name', "100", "left","text",None,None,False),
-            Column('email', 'Email', "100", "left","text","combox",None,False),
-            Column('id', 'ID', "100", "left","text",None,None,True)
+            Column('name', 'First Name' ),
+            Column('email', 'Email'),
+            Column('id', 'ID',controltype="hidden",show=False)
            ]
 
 const.AUTHOR_SEARCH = (
