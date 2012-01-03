@@ -1,14 +1,16 @@
 <script language="JavaScript" type="text/javascript">
  
     function create(){
-        //alert("abc");
+        //alert("create");
         //alert( $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject());
         $.post("/data/create",
             $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(),
             function(data){
                 if(data.result=="success"){
                     $("#dialog_{{entityname}}").dialog("close");
-                    $("div#search_{{entityname}} #asearch").click();
+                    //$("#dialog_{{entityname}} form#{{entityname}}_add").reset(),
+                    $("form[action='/data/create']")[0].reset();
+                    //alert('reset');
                 }else{
                     $.messager.alert('error','create data failed');  
                 }
@@ -111,7 +113,7 @@
      href="/data/create?entityname={{entityname}}">
 </div>
 <div id="dlg_{{entityname}}_buttons">  
-    <a id="{{entityname}}_btn_submit" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>  
+    <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-submit">提交</a>  
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
 </div>
 <!-- add dialog end -->

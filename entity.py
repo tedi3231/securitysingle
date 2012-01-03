@@ -26,6 +26,10 @@ def _makeRemoveSql(entityName,entityId):
     tableName = const.entities[entityName]["tablename"]
     return str.format("DELETE FROM {0} WHERE id = {1}",tableName,entityId)
 
+def _makeGetEntitySql(entityName,entityId):
+    tableName = const.entities[entityName]["tablename"]
+    return str.format("SELECT * FROM {0} WHERE id = {1}",tableName,entityId)
+
 def _makeInsertSql(entityName,arguments):
     columnNames,tableName = _getColumnNamesAndTableName(entityName)  
     vals = {}
@@ -96,6 +100,15 @@ def removeEntity(entityName,entityId):
         result["result"] = "error"        
     return result
 
+def getEntity(entityName,entityId):
+    result = _checkTable(entityName)
+    #print result
+    if result['result'] !='success':
+        return None
+    getSql = _makeGetEntitySql(entityName,entityId)
+    #print getSql
+    return db.get(getSql)
+
 def query(entityName,arguments):
     tablename = const.entities[entityName]["tablename"]
     condition = _makeWhereCondition(entityName,arguments)
@@ -129,4 +142,5 @@ if __name__ == "__main__":
     #print _makeUpdateSql("author",{"name":["chyyy"],"email":["chy234@ks.com"],"id":[1]})
     #print editEntity("author",{"name":["addddd"],"email":["chy11111@ks.com"],"id":[2]})
     #print(_makeWhereCondition("author",{'name':['pancy']}))
-    print query("author",{"page":['1'],"rows":['10']})
+    #print query("author",{"page":['1'],"rows":['10']})
+    print getEntity("author",1)

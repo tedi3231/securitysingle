@@ -1,4 +1,8 @@
 {{xsrf_form_html()}}
 {%for col in columns%}
-    {{modules.Column(col)}}
+    {% if entity %}
+       {{modules.Column(col,entity[col.field])}}
+    {% else %}
+       {{modules.Column(col)}}
+    {% end %}
 {% end %}

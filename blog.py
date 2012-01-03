@@ -47,6 +47,7 @@ class Application(tornado.web.Application):
             (r"/entry/list", EntriesHandler),
             (r"/data/create",CreateFormHandler),
             (r"/data/remove",RemoveHandler),
+            (r"/data/edit",EditHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
@@ -93,6 +94,17 @@ class RemoveHandler(BaseHandler):
         print entityname,entityId
         result = entity.removeEntity(entityname,entityId)
         self.write(tornado.escape.json_encode(result))
+
+class EditHandler(BaseHandler):
+    def get(self):
+        entityname = self.get_argument("entityname","")       
+        entityid = self.get_argument("id","")
+        row = entity.getEntity(entityname,entityid)
+        columns = const.entities[entityname]['columns']        
+        return self.render("edit.html",columns=columns,entity=row)
+
+    def post(self):
+        pass
 
 class CreateFormHandler(BaseHandler):
     def getEntityNameAndColumns( self ):
@@ -183,15 +195,15 @@ class SearchModule(tornado.web.UIModule):
 for generate form
 '''
 class EntityModule(tornado.web.UIModule):
-    def render(self,columns):
+    def render(self,columns,entity=None):
         #filter the column which need't save to database
         #columns = tuple([item for item in columns if item['noscaler']==False])
         #print columns 
-        return self.render_string("modules/entity.html",columns=columns )
+        return self.render_string("modules/entity.html",columns=columns,entity=entity )
 
 class ColumnModule(tornado.web.UIModule):
-    def render(self,column):
-        return self.render_string("modules/column.html",column=column)
+    def render(self,column,value=None):
+        return self.render_string("modules/column.html",column=column,value=None)
 
 def main():
     tornado.options.parse_command_line()
