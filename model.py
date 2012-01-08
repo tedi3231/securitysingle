@@ -1,6 +1,8 @@
 #from griddata import Column
 from schema import Column
 import const
+
+author_list = {'rows':[{'name':'  ','id':' '},{'name':'tedi3231','id':'2'}],'valuetext':'name','valuename':'id'}
 '''
 Authors table's columns
 '''
@@ -18,14 +20,14 @@ const.AUTHOR_SEARCH = (
 Entries table's columns 
 '''
 const.ENTRIES_COLUMNS = (
-            Column('slug', 'Slug', "100", "left"),
-            Column('title', 'title', "100", "left"),
-            Column('markdown', 'markdown', "100", "left"),
-            Column('html', 'html', "100", "left"),
-            Column('published', 'published', "100", "left"),
-            Column('updated', 'updated', "100", "left"),
-            Column('author_id', 'author_id', "100", "left"),
-            Column('id', 'ID', "100", "left",True),
+            Column('slug', 'Slug'),
+            Column('title', 'title'),
+            Column('markdown', 'markdown', ),
+            Column('html', 'html'), 
+            Column('published', 'published',easyclass="easyui-datebox"),
+            Column('updated', 'updated',easyclass="easyui-datebox"),
+            Column('author_id', 'author_id',control="select",source=author_list,easyclass="easyui-combobox"),
+            Column('id', 'ID', controltype='hidden',show=False),
            )
 
 const.ENTRIES_SEARCH = (

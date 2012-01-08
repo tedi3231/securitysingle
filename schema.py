@@ -21,8 +21,8 @@ class Column(object):
         strList=[]
         if vals['control'] == 'input':
             strList.append( str.format("<input type='{0}'",vals['controltype']))
-        if vals['defaultvalue']:
-            strList.append(str.format("value='{0}'",vals['defaultvalue']))
+            if vals['defaultvalue']:
+                strList.append(str.format("value='{0}'",vals['defaultvalue']))
         elif vals['control'] == 'select':
 		    strList.append("<select ")
         strList.append(str.format("id='{0}' name='{0}'",vals['field']))

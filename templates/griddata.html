@@ -1,16 +1,13 @@
 <script language="JavaScript" type="text/javascript">
  
     function create(){
-        //alert("create");
-        //alert( $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject());
         $.post("/data/create",
             $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(),
             function(data){
                 if(data.result=="success"){
+                    $("div#search_{{entityname}} #asearch").click();
                     $("#dialog_{{entityname}}").dialog("close");
-                    //$("#dialog_{{entityname}} form#{{entityname}}_add").reset(),
                     $("form[action='/data/create']")[0].reset();
-                    //alert('reset');
                 }else{
                     $.messager.alert('error','create data failed');  
                 }
@@ -22,6 +19,7 @@
 
     
     function remove(){
+       // alert('{{entityname}}');
        var row = $("#{{entityname}}").datagrid("getSelected");
        if(!row){
            $.messager.alert("没有选中的行","Please select one item to remove!","warning")
@@ -45,6 +43,51 @@
         return false;
     }
 
+    function editShow( ){
+       //alert("{{entityname}}");
+       var row = $("#{{entityname}}").datagrid("getSelected");
+       if(!row){
+           $.messager.alert("没有选中的行","Please select one item to edit!","warning")
+           return false;
+       }
+
+       var dialogId = "dialog_edit_{{entityname}}";
+       var $dialog = $("#"+dialogId);
+       var h = "/data/edit?entityname={{entityname}}&id="+row.id;
+       //$dialog.dialog("options").href = h;
+       //alert($dialog.dialog("options").href);
+       //alert(h);
+       $dialog.dialog(
+          { 
+                cache:false,
+                model:true,
+                onOpen:function(){
+                    $dialog.dialog("refresh",h);
+                }
+          }
+       );
+       //alert( $dialog.dialog("options").href );
+       $dialog.dialog("open","true");
+       return false;
+    }
+
+    function editSubmit( ){
+        $.post("/data/edit",
+            $("#dialog_edit_{{entityname}} form#{{entityname}}_add").serializeObject(),
+            function(data){
+                if(data.result=="success"){
+                    $("div#search_{{entityname}} #asearch").click();
+                    $("#dialog_edit_{{entityname}}").dialog("close");
+                    $("form[action='/data/edit']")[0].reset();
+                }else{
+                    $.messager.alert('error','edit data failed');  
+                }
+            },
+            "json"
+        );
+        return false;
+    }
+
     $(document).ready(function() {
         $("#toolbar_{{entityname}}_add").click(function(){
             var dialogId = "dialog_{{entityname}}";
@@ -52,7 +95,16 @@
             return false;
         });
 
-		$('#{{entityname}}').datagrid({
+        //show edit data
+        $("#toolbar_{{entityname}}_edit").bind("click",editShow);        
+
+        //submit edit
+        $("#{{entityname}}_edit_btn_add").bind("click",function(){
+            editSubmit();
+            return false;
+         });
+		
+        $('#{{entityname}}').datagrid({
 			queryParams : {
 				'_xsrf' : $("input[name=_xsrf]").val()
 			}
@@ -102,8 +154,8 @@
 </table>
 <div id="toolbar_{{entityname}}">
     <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
-    <a herf="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
-    <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="">删除</a>
+    <a herf="#" id="toolbar_{{entityname}}_edit" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
+    <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
 </div>
 <!-- gridview end -->
 
@@ -117,3 +169,14 @@
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
 </div>
 <!-- add dialog end -->
+
+<!-- edit dialog start -->
+<div id="dialog_edit_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
+     title="Save" iconCls="icon-ok" modal="true"  buttons="#dlg_edit_{{entityname}}_buttons" closed="true" 
+    > 
+</div>
+<div id="dlg_edit_{{entityname}}_buttons">  
+    <a id="{{entityname}}_edit_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-submit">提交</a>  
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_edit_{{entityname}}').dialog('close')">取消</a>
+</div>
+<!-- edit dialog end -->

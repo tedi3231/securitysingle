@@ -100,11 +100,14 @@ class EditHandler(BaseHandler):
         entityname = self.get_argument("entityname","")       
         entityid = self.get_argument("id","")
         row = entity.getEntity(entityname,entityid)
+        print row
         columns = const.entities[entityname]['columns']        
-        return self.render("edit.html",columns=columns,entity=row)
+        return self.render("edit.html",entityname=entityname,columns=columns,entity=row)
 
     def post(self):
-        pass
+        entityname = self.get_argument("entityname","")
+        result = entity.editEntity(entityname,self.request.arguments)
+        self.write(tornado.escape.json_encode(result))
 
 class CreateFormHandler(BaseHandler):
     def getEntityNameAndColumns( self ):
@@ -196,14 +199,15 @@ for generate form
 '''
 class EntityModule(tornado.web.UIModule):
     def render(self,columns,entity=None):
-        #filter the column which need't save to database
-        #columns = tuple([item for item in columns if item['noscaler']==False])
-        #print columns 
+        if entity:
+            for col in columns:
+                if entity.has_key(col.field):
+                    col.defaultvalue=entity[col.field]
         return self.render_string("modules/entity.html",columns=columns,entity=entity )
 
 class ColumnModule(tornado.web.UIModule):
     def render(self,column,value=None):
-        return self.render_string("modules/column.html",column=column,value=None)
+        return self.render_string("modules/column.html",column=column,value=value)
 
 def main():
     tornado.options.parse_command_line()
