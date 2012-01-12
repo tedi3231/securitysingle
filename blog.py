@@ -86,6 +86,8 @@ class BaseHandler(tornado.web.RequestHandler):
         gd = GridData()
         gd['total'] = total
         gd['rows'] = datarows
+        print total
+        print datarows
         return tornado.escape.json_encode(gd)
 
 class RemoveHandler(BaseHandler):

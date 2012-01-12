@@ -47,7 +47,7 @@ class Column(object):
 					  "selected" if str(row[valuename])==str(vals['defaultvalue']) else ''))	
             strList.append("</select>")
         print vals['defaultvalue']
-        print " ".join(strList)
+        #print " ".join(strList)
         return " ".join(strList)
 
 

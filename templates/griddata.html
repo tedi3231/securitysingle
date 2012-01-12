@@ -1,156 +1,139 @@
 <script language="JavaScript" type="text/javascript">
- 
-    function create(){
-        $.post("/data/create",
-            $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(),
-            function(data){
-                if(data.result=="success"){
-                    $("div#search_{{entityname}} #asearch").click();
-                    $("#dialog_{{entityname}}").dialog("close");
-                    $("form[action='/data/create']")[0].reset();
-                }else{
-                    $.messager.alert('error','create data failed');  
-                }
-            },
-            "json"
-        );
+    function create() {
+        $.post("/data/create", $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
+            if(data.result == "success") {
+                $("div#search_{{entityname}} #asearch").click();
+                $("#dialog_{{entityname}}").dialog("close");
+                $("form[action='/data/create']")[0].reset();
+            } else {
+                $.messager.alert('error', 'create data failed');
+            }
+        }, "json");
         return false;
     }
 
-    
-    function remove(){
-       // alert('{{entityname}}');
-       var row = $("#{{entityname}}").datagrid("getSelected");
-       if(!row){
-           $.messager.alert("没有选中的行","Please select one item to remove!","warning")
-           return false;
-       }
-    
-       $.post(
-               "/data/remove",
-               {
-                    'entityname':'{{entityname}}','id':row.id,'_xsrf':$("input[name=_xsrf]").val()
-               },
-               function(data){
-                    if(data.result=="success"){
-                        $("div#search_{{entityname}} #asearch").click();
-                    }else{
-                        $.messager.alert('出错了','remove data failed,'+data.result,"warning");  
-                    }
-              },
-              "json"
-        );
+    function remove() {
+        // alert('{{entityname}}');
+        var row = $("#{{entityname}}").datagrid("getSelected");
+        if(!row) {
+            $.messager.alert("没有选中的行", "Please select one item to remove!", "warning")
+            return false;
+        }
+
+        $.post("/data/remove", {
+            'entityname' : '{{entityname}}',
+            'id' : row.id,
+            '_xsrf' : $("input[name=_xsrf]").val()
+        }, function(data) {
+            if(data.result == "success") {
+                $("div#search_{{entityname}} #asearch").click();
+            } else {
+                $.messager.alert('出错了', 'remove data failed,' + data.result, "warning");
+            }
+        }, "json");
         return false;
     }
 
-    function editShow( ){
-       //alert("{{entityname}}");
-       var row = $("#{{entityname}}").datagrid("getSelected");
-       if(!row){
-           $.messager.alert("没有选中的行","Please select one item to edit!","warning")
-           return false;
-       }
+    function editShow() {
+        //alert("{{entityname}}");
+        var row = $("#{{entityname}}").datagrid("getSelected");
+        if(!row) {
+            $.messager.alert("没有选中的行", "Please select one item to edit!", "warning")
+            return false;
+        }
 
-       var dialogId = "dialog_edit_{{entityname}}";
-       var $dialog = $("#"+dialogId);
-       var h = "/data/edit?entityname={{entityname}}&id="+row.id;
-       //$dialog.dialog("options").href = h;
-       //alert($dialog.dialog("options").href);
-       //alert(h);
-       $dialog.dialog(
-          { 
-                cache:false,
-                model:true,
-                onOpen:function(){
-                    $dialog.dialog("refresh",h);
-                }
-          }
-       );
-       //alert( $dialog.dialog("options").href );
-       $dialog.dialog("open","true");
-       return false;
-    }
-
-    function editSubmit( ){
-        $.post("/data/edit",
-            $("#dialog_edit_{{entityname}} form#{{entityname}}_add").serializeObject(),
-            function(data){
-                if(data.result=="success"){
-                    $("div#search_{{entityname}} #asearch").click();
-                    $("#dialog_edit_{{entityname}}").dialog("close");
-                    $("form[action='/data/edit']")[0].reset();
-                }else{
-                    $.messager.alert('error','edit data failed');  
-                }
-            },
-            "json"
-        );
+        var dialogId = "dialog_edit_{{entityname}}";
+        var $dialog = $("#" + dialogId);
+        var h = "/data/edit?entityname={{entityname}}&id=" + row.id;
+        //$dialog.dialog("options").href = h;
+        //alert($dialog.dialog("options").href);
+        //alert(h);
+        $dialog.dialog({
+            cache : false,
+            model : true,
+            onOpen : function() {
+                $dialog.dialog("refresh", h);
+            }
+        });
+        //alert( $dialog.dialog("options").href );
+        $dialog.dialog("open", "true");
         return false;
     }
+
+    function editSubmit() {
+        $.post("/data/edit", $("#dialog_edit_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
+            if(data.result == "success") {
+                $("div#search_{{entityname}} #asearch").click();
+                $("#dialog_edit_{{entityname}}").dialog("close");
+                $("form[action='/data/edit']")[0].reset();
+            } else {
+                $.messager.alert('error', 'edit data failed');
+            }
+        }, "json");
+        return false;
+    }
+
 
     $(document).ready(function() {
-        $("#toolbar_{{entityname}}_add").click(function(){
+        $("#toolbar_{{entityname}}_add").click(function() {
             var dialogId = "dialog_{{entityname}}";
-            $("#"+dialogId).dialog("open","true");
+            $("#" + dialogId).dialog("open", "true");
             return false;
         });
-
         //show edit data
-        $("#toolbar_{{entityname}}_edit").bind("click",editShow);        
+        $("#toolbar_{{entityname}}_edit").bind("click", editShow);
 
         //submit edit
-        $("#{{entityname}}_edit_btn_add").bind("click",function(){
+        $("#{{entityname}}_edit_btn_add").bind("click", function() {
             editSubmit();
-            return false;
-         });
-		
-        $('#{{entityname}}').datagrid({
-			queryParams : {
-				'_xsrf' : $("input[name=_xsrf]").val()
-			}
-		});
-        
-        $("div#search_{{entityname}} #asearch").click(function(){
-            $("#{{entityname}}").datagrid("reload",$("div#search_{{entityname}} form").serializeObject());
             return false;
         });
 
-        $("#{{entityname}}_btn_add").bind("click",create);
-        $("#toolbar_{{entityname}}_remove").bind("click",remove);
-       
-	});
-</script>
+        $('#{{entityname}}').datagrid({
+            queryParams : {
+                '_xsrf' : $("input[name=_xsrf]").val()
+            }
+        });
 
+        $("div#search_{{entityname}} #asearch").click(function() {
+            $("#{{entityname}}").datagrid("reload", $("div#search_{{entityname}} form").serializeObject());
+            return false;
+        });
+
+        $("#{{entityname}}_btn_add").bind("click", create);
+        $("#toolbar_{{entityname}}_remove").bind("click", remove);
+
+    });
+
+</script>
 <!-- search form start -->
 <div id="search_{{entityname}}" class="easyui-accordion" collapsed="true">
-	<div title="查询条件" iconCls="icon-search">
+    <div title="查询条件" iconCls="icon-search">
         <form action="{{url}}" method="post" id="search">
             <div>
                 {{xsrf_form_html()}}
                 {{modules.Search(search_columns)}}
             </div>
-            <div style="padding-top:20px;">          
-                <a id="asearch" href="#" iconCls="icon-search" plain="true" 
-                   class="easyui-linkbutton">查询</a>	    
+            <div style="padding-top:20px;">
+                <a id="asearch" href="#" iconCls="icon-search" plain="true"
+                class="easyui-linkbutton">查询</a>
             </div>
         </form>
-	</div>
+    </div>
 </div>
 <!-- search form end -->
-
 <!-- gridview start -->
-<table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" 
-       pagination="{{pagination}}" toolbar="#toolbar_{{entityname}}" singleSelect="true">
-	<thead>
-		<tr>
-			{% for col in columns %}
-                {% if col.show == True %}
-                <th field="{{col.field}}" width="{{col.width}}" 
-                    align="{{col.align}}">{{col.title}}</th>
-                {% end %}
-			{% end %}
-		</tr>
-	</thead>
+<table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}"
+pagination="{{pagination}}" toolbar="#toolbar_{{entityname}}" singleSelect="true">
+    <thead>
+        <tr>
+            {% for col in columns %}
+            {% if col.show == True %} <th field="{{col.field}}" width="{{col.width}}"
+            align="{{col.align}}">{{col.title}}</th>
+            {% end %}
+            {% end %}
+        </tr>
+    </thead>
 </table>
 <div id="toolbar_{{entityname}}">
     <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
@@ -158,25 +141,21 @@
     <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
 </div>
 <!-- gridview end -->
-
 <!-- add dialog start -->
-<div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
-     title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true" 
-     href="/data/create?entityname={{entityname}}">
-</div>
-<div id="dlg_{{entityname}}_buttons">  
-    <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-submit">提交</a>  
+<div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
+title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true"
+href="/data/create?entityname={{entityname}}"></div>
+<div id="dlg_{{entityname}}_buttons">
+    <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
 </div>
 <!-- add dialog end -->
-
 <!-- edit dialog start -->
-<div id="dialog_edit_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"  
-     title="Save" iconCls="icon-ok" modal="true"  buttons="#dlg_edit_{{entityname}}_buttons" closed="true" 
-    > 
-</div>
-<div id="dlg_edit_{{entityname}}_buttons">  
-    <a id="{{entityname}}_edit_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-submit">提交</a>  
+<div id="dialog_edit_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
+title="Save" iconCls="icon-ok" modal="true"  buttons="#dlg_edit_{{entityname}}_buttons" closed="true"
+></div>
+<div id="dlg_edit_{{entityname}}_buttons">
+    <a id="{{entityname}}_edit_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
     <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_edit_{{entityname}}').dialog('close')">取消</a>
 </div>
 <!-- edit dialog end -->

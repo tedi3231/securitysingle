@@ -52,7 +52,7 @@ def _makeUpdateSql(entityName,arguments):
 
 
 def _makeWhereCondition(entityName,arguments):
-    columnNames = [item['name'] for item in const.entities[entityName]["search"]]
+    columnNames = [item['name'].lower() for item in const.entities[entityName]["search"]]
     columns = const.entities[entityName]["search"]
     condition = []        
     #print entityName,columnNames,columns       
@@ -111,6 +111,11 @@ def getEntity(entityName,entityId):
 
 def query(entityName,arguments):
     tablename = const.entities[entityName]["tablename"]
+    
+    columns = const.entities[entityName]["columns"]
+    formatColumns= [{item.field:item.formatter} for item in columns if item.formatter]
+    print formatColumns
+     
     condition = _makeWhereCondition(entityName,arguments)
     page = int(arguments["page"][0])-1
     rows = int(arguments["rows"][0])
@@ -132,6 +137,10 @@ def query(entityName,arguments):
         for k in item:
             if type(item[k]) is datetime:
                 item[k] = item[k].strftime("%Y-%m-%d")
+            #call formatter method
+            for fitem in formatColumns:
+                if k in fitem:
+                    item[k] = fitem[k](item[k])
     #print total,datarows
     return total,datarows
 
