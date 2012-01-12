@@ -27,14 +27,14 @@ import tornado.web
 import unicodedata
 from tornado.options import define, options
 from datetime import datetime
-from schema import Column,GridData
+from schema import Column, GridData
 import model
 import const
 import entity
 
 define("port", default=8888, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="blog database host")
-define("mysql_database", default="blog", help="blog database name")
+define("mysql_database", default="security", help="blog database name")
 define("mysql_user", default="root", help="blog database user")
 define("mysql_password", default="password", help="blog database password")
 
@@ -45,18 +45,19 @@ class Application(tornado.web.Application):
             (r"/", HomeHandler),
             (r"/author/list", AllAuthorsHandler),
             (r"/entry/list", EntriesHandler),
-            (r"/data/create",CreateFormHandler),
-            (r"/data/remove",RemoveHandler),
-            (r"/data/edit",EditHandler),
+            (r"/data/create", CreateFormHandler),
+            (r"/data/remove", RemoveHandler),
+            (r"/data/edit", EditHandler),
+            (r"/dns/list", DNSListHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
         settings = dict(
-            denug = True,
+            denug=True,
             blog_title=u"无锡安全信息专家委員会",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Entry": EntryModule,"Search":SearchModule,"Entity":EntityModule,"Column":ColumnModule},
+            ui_modules={"Entry": EntryModule, "Search":SearchModule, "Entity":EntityModule, "Column":ColumnModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             login_url="/auth/login",
@@ -80,8 +81,8 @@ class BaseHandler(tornado.web.RequestHandler):
         if not user_id: return None
         return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
 
-    def griddata(self,entityName):
-        total,datarows = entity.query(entityName,self.request.arguments)
+    def griddata(self, entityName):
+        total, datarows = entity.query(entityName, self.request.arguments)
         gd = GridData()
         gd['total'] = total
         gd['rows'] = datarows
@@ -89,39 +90,39 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class RemoveHandler(BaseHandler):
     def post(self):
-        entityname = self.get_argument("entityname","")       
-        entityId = self.get_argument("id","0")
-        print entityname,entityId
-        result = entity.removeEntity(entityname,entityId)
+        entityname = self.get_argument("entityname", "")       
+        entityId = self.get_argument("id", "0")
+        print entityname, entityId
+        result = entity.removeEntity(entityname, entityId)
         self.write(tornado.escape.json_encode(result))
 
 class EditHandler(BaseHandler):
     def get(self):
-        entityname = self.get_argument("entityname","")       
-        entityid = self.get_argument("id","")
-        row = entity.getEntity(entityname,entityid)
+        entityname = self.get_argument("entityname", "")       
+        entityid = self.get_argument("id", "")
+        row = entity.getEntity(entityname, entityid)
         print row
         columns = const.entities[entityname]['columns']        
-        return self.render("edit.html",entityname=entityname,columns=columns,entity=row)
+        return self.render("edit.html", entityname=entityname, columns=columns, entity=row)
 
     def post(self):
-        entityname = self.get_argument("entityname","")
-        result = entity.editEntity(entityname,self.request.arguments)
+        entityname = self.get_argument("entityname", "")
+        result = entity.editEntity(entityname, self.request.arguments)
         self.write(tornado.escape.json_encode(result))
 
 class CreateFormHandler(BaseHandler):
-    def getEntityNameAndColumns( self ):
-        entityname = self.get_argument("entityname","")       
+    def getEntityNameAndColumns(self):
+        entityname = self.get_argument("entityname", "")       
         columns = const.entities[entityname]["columns"]     
-        return (entityname,columns)
+        return (entityname, columns)
 
     def get(self):
-        entityname,columns = self.getEntityNameAndColumns()
-        self.render("create.html",columns = columns,entityname=entityname )
+        entityname, columns = self.getEntityNameAndColumns()
+        self.render("create.html", columns=columns, entityname=entityname)
 
     def post(self):
-        entityname = self.get_argument("entityname","")
-        result = entity.createEntity(entityname,self.request.arguments)
+        entityname = self.get_argument("entityname", "")
+        result = entity.createEntity(entityname, self.request.arguments)
         self.write(tornado.escape.json_encode(result))
 
 class HomeHandler(BaseHandler):
@@ -130,9 +131,9 @@ class HomeHandler(BaseHandler):
 
 class AllAuthorsHandler(BaseHandler):
     def get(self):                
-        self.render("griddata.html", entityname="author", url="/author/list", 
+        self.render("griddata.html", entityname="author", url="/author/list",
                     title="All Authors", rownumbers="true", pagination="true",
-                    columns=const.AUTHOR_COLUMNS,search_columns=const.AUTHOR_SEARCH)        
+                    columns=const.AUTHOR_COLUMNS, search_columns=const.AUTHOR_SEARCH)        
         
     def post(self):
         self.write(self.griddata("author"))
@@ -140,14 +141,24 @@ class AllAuthorsHandler(BaseHandler):
 
 class EntriesHandler(BaseHandler):
     def get(self):
-        self.render("griddata.html", entityname="entry", 
+        self.render("griddata.html", entityname="entry",
         url="/entry/list", title="All Entries",
-        rownumbers="true", pagination="true", 
-        columns=const.ENTRIES_COLUMNS,search_columns=const.ENTRIES_SEARCH)        
+        rownumbers="true", pagination="true",
+        columns=const.ENTRIES_COLUMNS, search_columns=const.ENTRIES_SEARCH)        
         
     def post(self):        
         self.write(self.griddata("entry"))
 
+class DNSListHandler(BaseHandler):
+    def get(self):
+        entityname = 'dnslist'
+        self.render("griddata.html", entityname=entityname,
+        url="/dns/list", title="All dns",
+        rownumbers="true", pagination="true",
+        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        
+    def post(self):        
+        self.write(self.griddata("dnslist"))
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
@@ -191,23 +202,23 @@ class EntryModule(tornado.web.UIModule):
 for generate search form
 '''
 class SearchModule(tornado.web.UIModule):
-    def render(self,model):
-        return self.render_string("modules/search.html",model=model)
+    def render(self, model):
+        return self.render_string("modules/search.html", model=model)
 
 '''
 for generate form
 '''
 class EntityModule(tornado.web.UIModule):
-    def render(self,columns,entity=None):
+    def render(self, columns, entity=None):
         if entity:
             for col in columns:
                 if entity.has_key(col.field):
-                    col.defaultvalue=entity[col.field]
-        return self.render_string("modules/entity.html",columns=columns,entity=entity )
+                    col.defaultvalue = entity[col.field]
+        return self.render_string("modules/entity.html", columns=columns, entity=entity)
 
 class ColumnModule(tornado.web.UIModule):
-    def render(self,column,value=None):
-        return self.render_string("modules/column.html",column=column,value=value)
+    def render(self, column, value=None):
+        return self.render_string("modules/column.html", column=column, value=value)
 
 def main():
     tornado.options.parse_command_line()

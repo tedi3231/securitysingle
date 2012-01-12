@@ -1,7 +1,8 @@
 #coding=utf8
 
 class Column(object):
-    def __init__(self,field,title,width=100,align="left",control="input",controltype="text",easyclass="",source=None,formatter=None,defaultvalue=None,show=True):
+    def __init__(self,field,title,width=100,align="left",control="input",controltype="text",
+                 easyclass="",source=None,formatter=None,defaultvalue=None,show=True):
         self.field = field
         self.title = title
         self.width = width
@@ -17,7 +18,8 @@ class Column(object):
 
     def __repr__(self):
     	vals = self.__dict__
-        keys = [item for item in vals if item not in ('easyclass','control','controltype',"source","formatter",'defaultvalue')]
+        keys = [item for item in vals if item not in ('easyclass','control','controltype',"source",
+                                                      "formatter",'defaultvalue')]
         strList=[]
         if vals['control'] == 'input':
             strList.append( str.format("<input type='{0}'",vals['controltype']))
@@ -40,12 +42,12 @@ class Column(object):
             valuename = vals['source']['valuename']
             valuetext = vals['source']['valuetext']
             for row in rows:
-			#print 'defaultvalue' + vals['defaultvalue']
-			#print 'row value' + row[valuetext]
+			    #print 'row value' + row[valuetext]
 	        	strList.append(str.format("<option value='{0}' {2}>{1}</option>",row[valuename],row[valuetext],
-					  "selected" if row[valuename]==vals['defaultvalue'] else ''))	
-            strList.append("</select>")	
-        #print "|".join(strList)
+					  "selected" if str(row[valuename])==str(vals['defaultvalue']) else ''))	
+            strList.append("</select>")
+        print vals['defaultvalue']
+        print " ".join(strList)
         return " ".join(strList)
 
 
