@@ -4,7 +4,6 @@ from schema import Column
 import const
 
 author_list = {'rows':[{'name':'  ','id':' '},{'name':'tedi3231','id':'2'}],'valuetext':'name','valuename':'id'}
-
 dnstypelist = {'rows':[{'name':'白域名','id':'1'},{'name':'恶意域名','id':'2'},{'name':'动态域名','id':'3'}],'valuetext':'name','valuename':'id'}
 
 def dnstypeformat( dnstype ):
@@ -40,6 +39,11 @@ const.ENTRIES_COLUMNS = (
             Column('id', 'id', controltype='hidden',show=False),
            )
 
+const.ENTRIES_SEARCH = (
+    {"name":"slug","title":"slug","validType":"","operation":"="},
+    {"name":"title","title":"Title","validType":"","operation":"="},
+)
+
 """
 dnslist
 """
@@ -54,10 +58,19 @@ const.DNSLIST_SEARCH = (
         {'name':'dnsname','title':'域名','validType':'','operation':'='},
 )        
 
-const.ENTRIES_SEARCH = (
-    {"name":"slug","title":"slug","validType":"","operation":"="},
-    {"name":"title","title":"Title","validType":"","operation":"="},
+"""
+EVILIP_LIST
+"""
+const.EVILIPLIST_COLUMNS=(
+    Column('id','id',controltype='hidden',show=False),
+    Column('startip','开始地址'),
+    Column('endip','结束地址'),
+    Column('describ','描述'),
 )
+
+const.EVILIPLIST_SEARCH = (
+        {'name':'dnsname','title':'域名','validType':'','operation':'='},
+)  
 
 const.entities = {
     "author":{"tablename":"authors","columns":const.AUTHOR_COLUMNS,"search":const.AUTHOR_SEARCH},
