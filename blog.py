@@ -52,6 +52,7 @@ class Application(tornado.web.Application):
             (r"/evilip/list", EVILIPListHandler),
             (r"/trodns/list",TRODNSHandler),
             (r"/troip/list", TROIPHandler),
+            (r"/globalpara/list",GLOBALPARAHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
@@ -199,6 +200,18 @@ class TROIPHandler(BaseHandler):
     def post(self):        
         self.write(self.griddata("troip"))
 
+class GLOBALPARAHandler(BaseHandler):
+    def get(self):
+        entityname = 'globalpara'
+        print const.entities[entityname]['search']
+        self.render("griddata.html", entityname=entityname,
+        url="/globalpara/list", title="检测参数",
+        rownumbers="true", pagination="true",
+        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        
+    def post(self):        
+        self.write(self.griddata("globalpara"))
+
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
     def get(self):
@@ -226,7 +239,6 @@ class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
             author_id = author["id"]
         self.set_secure_cookie("user", str(author_id))
         self.redirect(self.get_argument("next", "/"))
-
 
 class AuthLogoutHandler(BaseHandler):
     def get(self):
