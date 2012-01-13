@@ -72,9 +72,39 @@ const.EVILIPLIST_SEARCH = (
         {'name':'startip','title':'开始地址','validType':'','operation':'='},
 )
 
+
+"""
+TRO_DNS
+"""
+const.TRODNS_COLUMNS=(
+    Column('id','id',controltype='hidden',show=False),
+    Column('dnsname','DNS'),
+    Column('describ','描述'),
+)
+
+const.TRODNS_SEARCH = (
+        {'name':'dnsname','title':'DNS','validType':'','operation':'='},
+)
+
+"""
+TRO_IP
+"""
+const.TROIP_COLUMNS=(
+    Column('id','id',controltype='hidden',show=False),
+    Column('ip_addr','IP Addr'),
+    Column('time','Time'),
+    Column('describ','描述'),
+)
+
+const.TROIP_SEARCH = (
+        {'name':'ip_addr','title':'IP Addr','validType':'','operation':'='},
+)
+
 const.entities = {
     "author":{"tablename":"authors","columns":const.AUTHOR_COLUMNS,"search":const.AUTHOR_SEARCH},
     "entry":{"tablename":"entries","columns":const.ENTRIES_COLUMNS,"search":const.ENTRIES_SEARCH},
     "dnslist":{"tablename":"DNS_LIST","columns":const.DNSLIST_COLUMNS,"search":const.DNSLIST_SEARCH},
-    "eviliplist":{"tablename":"EVILIP_LIST","columns":const.EVILIPLIST_COLUMNS,"search":const.EVILIPLIST_SEARCH}
+    "evilip":{"tablename":"EVILIP_LIST","columns":const.EVILIPLIST_COLUMNS,"search":const.EVILIPLIST_SEARCH},
+    "trodns":{"tablename":"TRO_DNS","columns":const.TRODNS_COLUMNS,"search":const.TRODNS_SEARCH},
+    "troip": {"tablename":"TRO_IP","columns":const.TROIP_COLUMNS,"search":const.TROIP_SEARCH}
 }

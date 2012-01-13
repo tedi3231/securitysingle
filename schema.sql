@@ -53,3 +53,86 @@ CREATE TABLE TRO_DNS(
     dnsname varchar(255) NOT NULL,    
     describ varchar(255) 
 );
+
+DROP TABLE IF EXISTS GLOBALPARA;
+CREATE TABLE GLOBALPARA(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    beaterror INT DEFAULT 3,
+    beatcount INT DEFAULT 5,
+    dnsttl INT DEFAULT 60,
+    tcplasted INT DEFAULT 60,
+    tcpdivide INT DEFAULT 5,
+    tcpcount INT DEFAULT 5000,
+    httpsenddivide INT DEFAULT 5,
+    httppostdivide INT DEFAULT 5,    
+    describ varchar(255) 
+);
+
+DROP TABLE IF EXISTS ALARM;
+CREATE TABLE ALARM(
+    id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    rid   INT NOT NULL,
+    type  INT NOT NULL,
+    class INT NOT NULL,
+    dip INT NOT NULL,
+    dmac varchar(18) NOT NULL,
+    sip INT NOT NULL,
+    scc varchar(64) NOT NULL,
+    time INT NOT NULL,    
+    alarm_msg varchar(512) NOT NULL 
+);
+
+DROP TABLE IF EXISTS ALARM_EVENT;
+CREATE TABLE ALARM_EVENT(
+    alarm_id INT NOT NULL,
+    event_id INT NOT NULL
+);
+
+DROP TABLE IF EXISTS EVENT;
+CREATE TABLE EVENT(
+    id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    pid INT ,
+    psid INT, 
+    time INT,
+    risk INT,
+    sip INT,
+    sport INT,
+    dip INT,
+    dmac varchar(18) ,
+    dport INT,
+    pro INT,
+    sflag INT,
+    extradata varchar(255),
+    dns_name varchar(255)
+);
+
+DROP TABLE IF EXISTS RELATE_RULE;
+CREATE TABLE RELATE_RULE(
+    id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    type INT,
+    class INT,
+    issequence INT,
+    is_semicolon INT,
+    rule VARCHAR(255) ,
+    timeslice INT,
+    direction INT,
+    describ varchar(255),
+    isuse INT
+);
+
+DROP TABLE IF EXISTS USER_TROJAN_RULE;
+CREATE TABLE USER_TROJAN_RULE(
+	id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	srcip VARCHAR(66),
+        sport VARCHAR(11),
+	dstip VARCHAR(66),
+	dport VARCHAR(11),
+	offset INT,
+	dept   INT,
+	proto  INT,
+	signature VARCHAR(255),
+	troname VARCHAR(32) NOT NULL,
+	isuser INT NOT NULL,
+	special INT NOT NULL,
+	desrib VARCHAR(512)
+);

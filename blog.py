@@ -49,12 +49,15 @@ class Application(tornado.web.Application):
             (r"/data/remove", RemoveHandler),
             (r"/data/edit", EditHandler),
             (r"/dns/list", DNSListHandler),
+            (r"/evilip/list", EVILIPListHandler),
+            (r"/trodns/list",TRODNSHandler),
+            (r"/troip/list", TROIPHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
         settings = dict(
             denug=True,
-            blog_title=u"无锡安全信息专家委員会",
+            blog_title=u"This is an demo app",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={"Entry": EntryModule, "Search":SearchModule, "Entity":EntityModule, "Column":ColumnModule},
@@ -162,6 +165,39 @@ class DNSListHandler(BaseHandler):
         
     def post(self):        
         self.write(self.griddata("dnslist"))
+
+class EVILIPListHandler(BaseHandler):
+    def get(self):
+        entityname = 'evilip'
+        self.render("griddata.html", entityname=entityname,
+        url="/evilip/list", title="All evilip",
+        rownumbers="true", pagination="true",
+        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        
+    def post(self):        
+        self.write(self.griddata("evilip"))
+
+class TRODNSHandler(BaseHandler):
+    def get(self):
+        entityname = 'trodns'
+        self.render("griddata.html", entityname=entityname,
+        url="/trodns/list", title="All tro dns",
+        rownumbers="true", pagination="true",
+        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        
+    def post(self):        
+        self.write(self.griddata("trodns"))
+
+class TROIPHandler(BaseHandler):
+    def get(self):
+        entityname = 'troip'
+        self.render("griddata.html", entityname=entityname,
+        url="/troip/list", title="All tro ips",
+        rownumbers="true", pagination="true",
+        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        
+    def post(self):        
+        self.write(self.griddata("troip"))
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
