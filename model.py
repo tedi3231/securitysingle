@@ -69,7 +69,7 @@ const.EVILIPLIST_COLUMNS=(
 )
 
 const.EVILIPLIST_SEARCH = (
-        {'name':'dnsname','title':'域名','validType':'','operation':'='},
+        {'name':'startip','title':'开始地址','validType':'','operation':'='},
 )  
 
 const.entities = {
