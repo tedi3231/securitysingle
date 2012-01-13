@@ -70,10 +70,11 @@ const.EVILIPLIST_COLUMNS=(
 
 const.EVILIPLIST_SEARCH = (
         {'name':'startip','title':'开始地址','validType':'','operation':'='},
-)  
+)
 
 const.entities = {
     "author":{"tablename":"authors","columns":const.AUTHOR_COLUMNS,"search":const.AUTHOR_SEARCH},
     "entry":{"tablename":"entries","columns":const.ENTRIES_COLUMNS,"search":const.ENTRIES_SEARCH},
-    "dnslist":{"tablename":"DNS_LIST","columns":const.DNSLIST_COLUMNS,"search":const.DNSLIST_SEARCH}
+    "dnslist":{"tablename":"DNS_LIST","columns":const.DNSLIST_COLUMNS,"search":const.DNSLIST_SEARCH},
+    "eviliplist":{"tablename":"EVILIP_LIST","columns":const.EVILIPLIST_COLUMNS,"search":const.EVILIPLIST_SEARCH}
 }
