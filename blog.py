@@ -60,7 +60,7 @@ class Application(tornado.web.Application):
             ui_modules={"Entry": EntryModule, "Search":SearchModule, "Entity":EntityModule, "Column":ColumnModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
-            login_url="/auth/login",
+            #login_url="/auth/login",
             autoescape=None,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -79,7 +79,8 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         user_id = self.get_secure_cookie("user")
         if not user_id: return None
-        return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
+        #return self.db.get("SELECT * FROM authors WHERE id = %s", int(user_id))
+        return 'tedi3231'
 
     def griddata(self, entityName):
         total, datarows = entity.query(entityName, self.request.arguments)
