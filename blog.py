@@ -91,8 +91,8 @@ class BaseHandler(tornado.web.RequestHandler):
         gd = GridData()
         gd['total'] = total
         gd['rows'] = datarows
-        print total
-        print datarows
+        #print total
+        #print datarows
         return tornado.escape.json_encode(gd)
 
 class RemoveHandler(BaseHandler):
@@ -203,7 +203,7 @@ class TROIPHandler(BaseHandler):
 class GLOBALPARAHandler(BaseHandler):
     def get(self):
         entityname = 'globalpara'
-        print const.entities[entityname]['search']
+        #print const.entities[entityname]['search']
         self.render("griddata.html", entityname=entityname,
         url="/globalpara/list", title="检测参数",
         rownumbers="true", pagination="true",
@@ -254,6 +254,7 @@ for generate search form
 '''
 class SearchModule(tornado.web.UIModule):
     def render(self, model):
+        print model
         return self.render_string("modules/search.html", model=model)
 
 '''
