@@ -55,7 +55,7 @@ const.DNSLIST_COLUMNS=(
 )
 
 const.DNSLIST_SEARCH = (
-        {'name':'dnsname','title':'域名','validType':'','operation':'='},
+    {'name':'dnsname','title':'域名','validType':'','operation':'='},
 )        
 
 """
@@ -69,7 +69,7 @@ const.EVILIPLIST_COLUMNS=(
 )
 
 const.EVILIPLIST_SEARCH = (
-        {'name':'startip','title':'开始地址','validType':'','operation':'='},
+    {'name':'startip','title':'开始地址','validType':'','operation':'='},
 )
 
 
@@ -83,7 +83,7 @@ const.TRODNS_COLUMNS=(
 )
 
 const.TRODNS_SEARCH = (
-        {'name':'dnsname','title':'DNS','validType':'','operation':'='},
+    {'name':'dnsname','title':'DNS','validType':'','operation':'='},
 )
 
 """
@@ -97,7 +97,7 @@ const.TROIP_COLUMNS=(
 )
 
 const.TROIP_SEARCH = (
-        {'name':'ip_addr','title':'IP Addr','validType':'','operation':'='},
+    {'name':'ip_addr','title':'IP Addr','validType':'','operation':'='},
 )
 
 """
@@ -105,19 +105,19 @@ GLOBALPARA
 """
 const.GLOBALPARA_COLUMNS=(
     Column('id','id',controltype='hidden',show=False),
-    Column('beaterror','心跳偏差值',defaultvalue=3),
-    Column('beatcount','心跳次数',defaultvalue=5),
+    Column('beaterror','beaterror',defaultvalue=3),
+    """Column('beatcount','心跳次数',defaultvalue=5),
     Column('dnsttl','域名生存期',defaultvalue=60),
     Column('tcplasted','TCP长链接时间',defaultvalue=60),
     Column('tcpdivide','TCP链接内比值',defaultvalue=5),
     Column('tcpcount','TCP链接内次数',defaultvalue=5000),
     Column('httpsenddivide','HTTP发收比值',defaultvalue=5),
     Column('httppostdevide','HTTPPostGet比值',defaultvalue=5),
-    Column('describ','描述'),
+    Column('describ','描述'),"""
 )
 
 const.GLOBALPARA_SEARCH = (
-        {'name':'beaterror','title':'心跳偏差值','validType':'','operation':'='},
+   {'name':'beaterror','title':'beaterror','validType':'','operation':'='},
 )
 
 const.entities = {
