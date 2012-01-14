@@ -9,7 +9,7 @@ import tornado.database
 from copy import copy
 from datetime import datetime
 
-db = tornado.database.Connection("127.0.0.1:3306","blog","root","password")
+db = None #tornado.database.Connection("127.0.0.1:3306","blog","root","password")
 
 def _checkTable(entityName):
     result = {"result":"success","message":""}
