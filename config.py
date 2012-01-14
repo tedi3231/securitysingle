@@ -1,5 +1,6 @@
 #coding=utf8
 import os
+import re
 import tornado.options
 from tornado.options import define, options
 import basehandler
