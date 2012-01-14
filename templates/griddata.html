@@ -73,6 +73,12 @@
         return false;
     }
 
+    function clickRow(rowIndex) {
+        alert(rowIndex);
+        //$("#{{entityname}}_children").load("/dns/list");
+        return false;
+    }
+
 
     $(document).ready(function() {
         $("#toolbar_{{entityname}}_add").click(function() {
@@ -106,64 +112,64 @@
     });
 
 </script>
-<!-- search form start -->
-<div id="search_{{entityname}}" class="easyui-accordion" collapsed="true">
-    <div title="查询条件" iconCls="icon-search">
-        <form action="{{url}}" method="post" id="search">
-            <div>
-                {{xsrf_form_html()}}
-                {{modules.Search(search_columns)}}
-            </div>
-            <div style="padding-top:20px;">
-                <a id="asearch" href="#" iconCls="icon-search" plain="true"
-                class="easyui-linkbutton">查询</a>
-            </div>
-        </form>
+
+    <!-- gridview start -->
+    <!-- search form start -->
+    <div id="search_{{entityname}}" class="easyui-accordion" collapsed="true">
+        <div title="查询条件" iconCls="icon-search">
+            <form action="{{url}}" method="post" id="search">
+                <div>
+                    {{xsrf_form_html()}}
+                    {{modules.Search(search_columns)}}
+                </div>
+                <div style="padding-top:20px;">
+                    <a id="asearch" href="#" iconCls="icon-search" plain="true"
+                    class="easyui-linkbutton">查询</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<!-- search form end -->
-<!-- gridview start -->
-<table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}"
-pagination="{{pagination}}" {% if canAdd==True or canEdit==True or canRemove==True %} toolbar="#toolbar_{{entityname}}" {% end %} singleSelect="true">
-    <thead>
-        <tr>
-            {% for col in columns %}
-            {% if col.show == True %} <th field="{{col.field}}" width="{{col.width}}"
-            align="{{col.align}}">{{col.title}}</th>
-            {% end %}
-            {% end %}
-        </tr>
-    </thead>
-</table>
+    <!-- search form end -->
+    <table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}" onSelect="clickRow"
+    pagination="{{pagination}}" {% if canAdd==True or canEdit==True or canRemove==True %} toolbar="#toolbar_{{entityname}}" {% end %} singleSelect="true">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                {% if col.show == True %} <th field="{{col.field}}" width="{{col.width}}"
+                align="{{col.align}}">{{col.title}}</th>
+                {% end %}
+                {% end %}
+            </tr>
+        </thead>
+    </table>
+    <div id="toolbar_{{entityname}}">
+        {% if canAdd==True %} <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+        {% end %}
+        {% if canEdit==True %} <a herf="#" id="toolbar_{{entityname}}_edit" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
+        {% end %}
+        {% if canRemove==True %} <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+        {% end %}
+    </div>
+    <!-- gridview end -->
+    {% if canAdd==True %} <!-- add dialog start -->
+    <div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
+    title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true"
+    href="/data/create?entityname={{entityname}}"></div>
+    <div id="dlg_{{entityname}}_buttons">
+        <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
+    </div>
+    <!-- add dialog end -->
+    {% end %}
 
-<div id="toolbar_{{entityname}}">
-    {% if canAdd==True %}
-    <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+    {% if canEdit==True %} <!-- edit dialog start -->
+    <div id="dialog_edit_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
+    title="Save" iconCls="icon-ok" modal="true"  buttons="#dlg_edit_{{entityname}}_buttons" closed="true"
+    ></div>
+    <div id="dlg_edit_{{entityname}}_buttons">
+        <a id="{{entityname}}_edit_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_edit_{{entityname}}').dialog('close')">取消</a>
+    </div>
+    <!-- edit dialog end -->
     {% end %}
-     {% if canEdit==True %}
-    <a herf="#" id="toolbar_{{entityname}}_edit" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
-    {% end %}
-     {% if canRemove==True %}
-    <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
-    {% end %}
-</div>
-
-<!-- gridview end -->
-<!-- add dialog start -->
-<div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
-title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true"
-href="/data/create?entityname={{entityname}}"></div>
-<div id="dlg_{{entityname}}_buttons">
-    <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
-</div>
-<!-- add dialog end -->
-<!-- edit dialog start -->
-<div id="dialog_edit_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
-title="Save" iconCls="icon-ok" modal="true"  buttons="#dlg_edit_{{entityname}}_buttons" closed="true"
-></div>
-<div id="dlg_edit_{{entityname}}_buttons">
-    <a id="{{entityname}}_edit_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_edit_{{entityname}}').dialog('close')">取消</a>
-</div>
-<!-- edit dialog end -->
+<div id="{{entityname}}_children" >children</div>
