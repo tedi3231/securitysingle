@@ -37,6 +37,8 @@ def _makeInsertSql(entityName,arguments):
         if key in columnNames:
             vals[key] = arguments[key][0]    
     sql = str.format("insert into {0}({1})values({2})",tableName,",".join(vals.keys()),",".join(["%s"]*len(vals.keys())))
+    #print arguments
+    #print sql
     return sql,vals     
 
 def _makeUpdateSql(entityName,arguments):

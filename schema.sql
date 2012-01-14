@@ -74,6 +74,7 @@ CREATE TABLE ALARM(
     rid   INT NOT NULL,
     type  INT NOT NULL,
     class INT NOT NULL,
+    trojanid INT NOT NULL,
     dip INT NOT NULL,
     dmac varchar(18) NOT NULL,
     sip INT NOT NULL,

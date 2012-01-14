@@ -46,7 +46,7 @@ class Column(object):
 	        	strList.append(str.format("<option value='{0}' {2}>{1}</option>",row[valuename],row[valuetext],
 					  "selected" if str(row[valuename])==str(vals['defaultvalue']) else ''))	
             strList.append("</select>")
-        print vals['defaultvalue']
+        #print vals['defaultvalue']
         #print " ".join(strList)
         return " ".join(strList)
 

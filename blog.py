@@ -43,16 +43,16 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", HomeHandler),
-            (r"/author/list", AllAuthorsHandler),
-            (r"/entry/list", EntriesHandler),
             (r"/data/create", CreateFormHandler),
             (r"/data/remove", RemoveHandler),
             (r"/data/edit", EditHandler),
             (r"/dns/list", DNSListHandler),
             (r"/evilip/list", EVILIPListHandler),
-            (r"/trodns/list",TRODNSHandler),
+            (r"/trodns/list", TRODNSHandler),
             (r"/troip/list", TROIPHandler),
-            (r"/globalpara/list",GLOBALPARAHandler),
+            (r"/globalpara/list", GLOBALPARAHandler),
+            (r"/alarm/list", ALARMHandler),
+            (r"/event/list",EVENTHandler),
             (r"/auth/login", AuthLoginHandler),
             (r"/auth/logout", AuthLogoutHandler),
         ]
@@ -61,7 +61,7 @@ class Application(tornado.web.Application):
             blog_title=u"This is an demo app",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"Entry": EntryModule, "Search":SearchModule, "Entity":EntityModule, "Column":ColumnModule},
+            ui_modules={"Search":SearchModule, "Entity":EntityModule, "Column":ColumnModule},
             xsrf_cookies=True,
             cookie_secret="11oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
             #login_url="/auth/login",
@@ -90,10 +90,16 @@ class BaseHandler(tornado.web.RequestHandler):
         total, datarows = entity.query(entityName, self.request.arguments)
         gd = GridData()
         gd['total'] = total
-        gd['rows'] = datarows
-        #print total
-        #print datarows
+        gd['rows'] = datarows        
         return tornado.escape.json_encode(gd)
+    
+    def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True):
+        columns = const.entities[entityname]['columns']
+        search_columns = const.entities[entityname]['search']
+        self.render("griddata.html", entityname=entityname, url=url, title=title,
+                    rownumbers="true", pagination="true", columns=columns,
+                    search_columns=search_columns, canAdd=canAdd, canEdit=canEdit, canRemove=canRemove
+                   )
 
 class RemoveHandler(BaseHandler):
     def post(self):
@@ -136,81 +142,54 @@ class HomeHandler(BaseHandler):
     def get(self):
         self.render("home.html")
 
-class AllAuthorsHandler(BaseHandler):
-    def get(self):                
-        self.render("griddata.html", entityname="author", url="/author/list",
-                    title="All Authors", rownumbers="true", pagination="true",
-                    columns=const.AUTHOR_COLUMNS, search_columns=const.AUTHOR_SEARCH)        
-        
-    def post(self):
-        self.write(self.griddata("author"))
-
-
-class EntriesHandler(BaseHandler):
-    def get(self):
-        self.render("griddata.html", entityname="entry",
-        url="/entry/list", title="All Entries",
-        rownumbers="true", pagination="true",
-        columns=const.ENTRIES_COLUMNS, search_columns=const.ENTRIES_SEARCH)        
-        
-    def post(self):        
-        self.write(self.griddata("entry"))
-
-class DNSListHandler(BaseHandler):
-    def get(self):
-        entityname = 'dnslist'
-        self.render("griddata.html", entityname=entityname,
-        url="/dns/list", title="All dns",
-        rownumbers="true", pagination="true",
-        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+class DNSListHandler(BaseHandler):    
+    def get(self):        
+        self.rendergriddata('dnslist', '域名配置', '/dns/list')
         
     def post(self):        
         self.write(self.griddata("dnslist"))
 
 class EVILIPListHandler(BaseHandler):
-    def get(self):
-        entityname = 'evilip'
-        self.render("griddata.html", entityname=entityname,
-        url="/evilip/list", title="All evilip",
-        rownumbers="true", pagination="true",
-        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+    def get(self):        
+        self.rendergriddata('evilip', '恶意地址', '/evilip/list')
         
     def post(self):        
         self.write(self.griddata("evilip"))
 
 class TRODNSHandler(BaseHandler):
     def get(self):
-        entityname = 'trodns'
-        self.render("griddata.html", entityname=entityname,
-        url="/trodns/list", title="All tro dns",
-        rownumbers="true", pagination="true",
-        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        self.rendergriddata('trodns', 'DNS木马触发器', '/trodns/list')
         
     def post(self):        
         self.write(self.griddata("trodns"))
 
 class TROIPHandler(BaseHandler):
-    def get(self):
-        entityname = 'troip'
-        self.render("griddata.html", entityname=entityname,
-        url="/troip/list", title="All tro ips",
-        rownumbers="true", pagination="true",
-        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
-        
+    def get(self):      
+        self.rendergriddata('troip', '木马触发器', '/troip/list')
+                
     def post(self):        
         self.write(self.griddata("troip"))
 
 class GLOBALPARAHandler(BaseHandler):
     def get(self):
-        entityname = 'globalpara'
-        #print const.entities[entityname]['search']
-        self.render("griddata.html", entityname=entityname,
-        url="/globalpara/list", title="检测参数",
-        rownumbers="true", pagination="true",
-        columns=const.entities[entityname]['columns'], search_columns=const.entities[entityname]['search'])        
+        self.rendergriddata('globalpara', '检测参数', '/globalpara/list')
         
     def post(self):        
         self.write(self.griddata("globalpara"))
+
+class ALARMHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False)
+        
+    def post(self):        
+        self.write(self.griddata("alarm"))
+
+class EVENTHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('event', '事件子因', '/event/list', canAdd=True, canRemove=False, canEdit=False)
+        
+    def post(self):        
+        self.write(self.griddata("event"))
 
 class AuthLoginHandler(BaseHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
@@ -244,10 +223,6 @@ class AuthLogoutHandler(BaseHandler):
     def get(self):
         self.clear_cookie("user")
         self.redirect(self.get_argument("next", "/"))
-
-class EntryModule(tornado.web.UIModule):
-    def render(self, entry):
-        return self.render_string("modules/entry.html", entry=entry)
 
 '''
 for generate search form

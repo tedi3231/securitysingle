@@ -124,7 +124,7 @@
 <!-- search form end -->
 <!-- gridview start -->
 <table id="{{entityname}}" fit="true" url="{{url}}" title="{{title}}"  rownumbers="{{rownumbers}}"
-pagination="{{pagination}}" toolbar="#toolbar_{{entityname}}" singleSelect="true">
+pagination="{{pagination}}" {% if canAdd==True or canEdit==True or canRemove==True %} toolbar="#toolbar_{{entityname}}" {% end %} singleSelect="true">
     <thead>
         <tr>
             {% for col in columns %}
@@ -135,11 +135,19 @@ pagination="{{pagination}}" toolbar="#toolbar_{{entityname}}" singleSelect="true
         </tr>
     </thead>
 </table>
+
 <div id="toolbar_{{entityname}}">
+    {% if canAdd==True %}
     <a herf="#" id="toolbar_{{entityname}}_add" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+    {% end %}
+     {% if canEdit==True %}
     <a herf="#" id="toolbar_{{entityname}}_edit" class="easyui-linkbutton" iconCls="icon-edit" plain="true" >修改</a>
+    {% end %}
+     {% if canRemove==True %}
     <a herf="#" id="toolbar_{{entityname}}_remove" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+    {% end %}
 </div>
+
 <!-- gridview end -->
 <!-- add dialog start -->
 <div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"

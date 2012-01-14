@@ -105,19 +105,64 @@ GLOBALPARA
 """
 const.GLOBALPARA_COLUMNS=(
     Column('id','id',controltype='hidden',show=False),
-    Column('beaterror','beaterror'),
-    """Column('beatcount','心跳次数',defaultvalue=5),
+    Column('beaterror','心跳偏差'),
+    Column('beatcount','心跳次数',defaultvalue=5),
     Column('dnsttl','域名生存期',defaultvalue=60),
     Column('tcplasted','TCP长链接时间',defaultvalue=60),
     Column('tcpdivide','TCP链接内比值',defaultvalue=5),
     Column('tcpcount','TCP链接内次数',defaultvalue=5000),
     Column('httpsenddivide','HTTP发收比值',defaultvalue=5),
-    Column('httppostdevide','HTTPPostGet比值',defaultvalue=5),
-    Column('describ','描述'),"""
+    Column('httppostdivide','HTTPPostGet比值',defaultvalue=5),
+    Column('describ','描述'),
 )
 
 const.GLOBALPARA_SEARCH = (
    {'name':'beaterror','title':'beaterror','validType':'','operation':'='},
+)
+
+"""
+ALARM
+"""
+const.ALARM_COLUMNS=(
+    Column('id','id',controltype='hidden',show=False),
+    Column('rid','rid',controltype='hidden',show=False,defaultvalue=0),
+    Column('type','报警类别'),
+    Column('class','报警级别'),
+    Column('trojanid','木马号'),
+    Column('dip','被控主机地址'),
+    Column('dmac','被控主机MAC地址'),
+    Column('sip','控制主机地址'),
+    Column('scc','控制主机所在国家'),
+    Column('time','报警时间'),
+    Column('alarm_msg','报警描述'),
+)
+
+const.ALARM_SEARCH = (
+   {'name':'type','title':'报警类别','validType':'','operation':'='},
+)
+
+"""
+EVENT
+"""
+const.EVENT_COLUMNS=(
+    Column('id','id',controltype='hidden',show=False),
+    Column('pid','事件规则集号',controltype='hidden',show=False,defaultvalue=0),
+    Column('psid','事件规则号',controltype='hidden',show=False,defaultvalue=0),
+    Column('time','产生事件时间'),
+    Column('risk','事件危险值'),
+    Column('sip','外部主机地址'),
+    Column('sport','外部主机端口'),
+    Column('dip','内部主机地址'),
+    Column('dmac','内部主机MAC地址'),
+    Column('dport','内部主机端口'),
+    Column('pro','协议'),
+    Column('sflag','是否包含域名',controltype='hidden',show=False,defaultvalue=0),
+    Column('extradata','事件描述'),
+    Column('dns_name','事件相关的域名',controltype='hidden',show=False,defaultvalue=''),    
+)
+
+const.EVENT_SEARCH = (
+   {'name':'type','title':'报警类别','validType':'','operation':'='},
 )
 
 const.entities = {
@@ -127,5 +172,7 @@ const.entities = {
     "evilip":{"tablename":"EVILIP_LIST","columns":const.EVILIPLIST_COLUMNS,"search":const.EVILIPLIST_SEARCH},
     "trodns":{"tablename":"TRO_DNS","columns":const.TRODNS_COLUMNS,"search":const.TRODNS_SEARCH},
     "troip": {"tablename":"TRO_IP","columns":const.TROIP_COLUMNS,"search":const.TROIP_SEARCH},
-    "globalpara": {"tablename":"GLOBALPARA","columns":const.GLOBALPARA_COLUMNS,"search":const.GLOBALPARA_SEARCH}
+    "globalpara": {"tablename":"GLOBALPARA","columns":const.GLOBALPARA_COLUMNS,"search":const.GLOBALPARA_SEARCH},
+    "alarm": {"tablename":"ALARM","columns":const.ALARM_COLUMNS,"search":const.ALARM_SEARCH},
+    "event": {"tablename":"EVENT","columns":const.EVENT_COLUMNS,"search":const.EVENT_SEARCH}
 }
