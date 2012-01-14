@@ -105,7 +105,7 @@ GLOBALPARA
 """
 const.GLOBALPARA_COLUMNS=(
     Column('id','id',controltype='hidden',show=False),
-    Column('beaterror','beaterror',defaultvalue=3),
+    Column('beaterror','beaterror'),
     """Column('beatcount','心跳次数',defaultvalue=5),
     Column('dnsttl','域名生存期',defaultvalue=60),
     Column('tcplasted','TCP长链接时间',defaultvalue=60),
