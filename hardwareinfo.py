@@ -26,11 +26,11 @@ def get_df_data(datapath):
     data = pipe.read().strip()    
     rows = []    
     lines =  data.split("\n")    
-    header = rows.append( tuple(lines[0].split()) )    
+    header = tuple(lines[0].split())    
     del lines[0]
     for line in  lines:
         rows.append(tuple(line.split()))
-    return rows        
+    return header,rows        
 
 def get_time_info( ):
     """
@@ -43,8 +43,9 @@ def get_time_info( ):
     return {'starttime':os.popen(startTimeCmd).read().strip(),'runtime':runTimeText}
     
 def getNetworkInfo( ):
-    temp = os.popen("ifconfig").read()
-    return temp
+    tempstream = os.popen("ifconfig")
+    lines= [line for line in tempstream]
+    return lines
             
 if __name__ == "__main__":
     info = get_time_info()
