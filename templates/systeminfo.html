@@ -1,0 +1,31 @@
+<div id="hardinfo" class="easyui-accordion"  style="height:300px;">
+    <div title="内存使用情况" iconCls="icon-ok" style="overflow: auto;padding: 10px;height:100px;">
+        <table>
+            <thead>
+                <th>大小</th>
+                <th>已用</th>
+                <th>剩余</th>
+                <th>百分比</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="200px">{{meminfo['MemTotal']}} MB</td>
+                    <td width="200px">{{meminfo['MemUsed']}} MB</td>
+                    <td width="200px">{{meminfo['MemFree']}} MB</td>
+                    <td width="200px">
+                    <div style="width:200px;height:25px;background:green;padding:2px;">
+                        <div style="background:white;width: {{int(meminfo['Percent'])}}%;height:24px;">
+                            {{int(meminfo['Percent'])}}%
+                        </div>
+                    </div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div title="硬盘使用情况" iconCls="icon-ok" style="padding: 10px;"></div>
+    <div title="运行时间" iconCls="icon-ok" style="padding: 10px;"></div>
+    <div title="用户信息" iconCls="icon-ok" style="padding: 10px;"></div>
+    <div title="网络接口" iconCls="icon-ok" style="padding: 10px;">
+        {{networkinfo}}
+    </div>
+</div>
