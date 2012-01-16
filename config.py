@@ -6,6 +6,7 @@ from tornado.options import define, options
 import basehandler
 from basehandler import BaseHandler
 import listhandler
+import otherhandler
 from webmodule import SearchModule,EntityModule,ColumnModule
 
 define("port", default=9999, help="run on the given port", type=int)
@@ -27,6 +28,7 @@ handlers = [
             (r"/alarm/list", listhandler.ALARMHandler),
             (r"/event/list",listhandler.EVENTHandler),
             (r"/usertrojanrule/list",listhandler.USER_TROJAN_RULEHandler),
+            (r"/system/info",otherhandler.SystemHandler),
             (r"/auth/login", basehandler.AuthLoginHandler),
             (r"/auth/logout", basehandler.AuthLogoutHandler),
         ]

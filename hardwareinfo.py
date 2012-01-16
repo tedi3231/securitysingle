@@ -44,7 +44,7 @@ def get_time_info( ):
     
 def getNetworkInfo( ):
     temp = os.popen("ifconfig").read()
-    print temp
+    return temp
             
 if __name__ == "__main__":
     info = get_time_info()
