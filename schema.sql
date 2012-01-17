@@ -34,15 +34,15 @@ CREATE TABLE DNS_LIST(
 DROP TABLE IF EXISTS EVILIP_LIST;
 CREATE TABLE EVILIP_LIST(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    startip INT NOT NULL,
-    endip INT NOT NULL,
+    startip BIGINT NOT NULL,
+    endip BIGINT NOT NULL,
     describ varchar(255) 
 );
 
 DROP TABLE IF EXISTS TRO_IP;
 CREATE TABLE TRO_IP(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    ip_addr INT NOT NULL,
+    ip_addr BIGINT NOT NULL,
     time INT NOT NULL,
     describ varchar(255) 
 );
@@ -75,9 +75,9 @@ CREATE TABLE ALARM(
     type  INT NOT NULL,
     class INT NOT NULL,
     trojanid INT NOT NULL,
-    dip INT NOT NULL,
+    dip BIGINT NOT NULL,
     dmac varchar(18) NOT NULL,
-    sip INT NOT NULL,
+    sip BIGINT NOT NULL,
     scc varchar(64) NOT NULL,
     time INT NOT NULL,    
     alarm_msg varchar(512) NOT NULL 
@@ -96,9 +96,9 @@ CREATE TABLE EVENT(
     psid INT, 
     time INT,
     risk INT,
-    sip INT,
+    sip BIGINT,
     sport INT,
-    dip INT,
+    dip BIGINT,
     dmac varchar(18) ,
     dport INT,
     pro INT,
@@ -124,9 +124,9 @@ CREATE TABLE RELATE_RULE(
 DROP TABLE IF EXISTS USER_TROJAN_RULE;
 CREATE TABLE USER_TROJAN_RULE(
 	id    INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	srcip VARCHAR(66),
-        sport VARCHAR(11),
-	dstip VARCHAR(66),
+	srcip BIGINT,
+    sport VARCHAR(11),
+	dstip BIGINT,
 	dport VARCHAR(11),
 	offset INT,
 	dept   INT,
