@@ -1,5 +1,14 @@
 <script language="JavaScript" type="text/javascript">
     function create() {
+        var valid = true;
+        $("input[required=true]","#dialog_{{entityname}} form#{{entityname}}_add").each(function(){
+            valid = valid && $(this).validatebox('isValid');        
+        });
+        if( !valid ){
+            //alert("valid false");
+            return false;
+        }
+        //alert("valid true");
         $.post("/data/create", $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
             if(data.result == "success") {
                 $("div#search_{{entityname}} #asearch").click();

@@ -1,5 +1,6 @@
-#from griddata import Column
 #coding=utf8
+#from griddata import Column
+import datetime
 from schema import Column
 import const
 
@@ -16,8 +17,8 @@ def convertIpToInt(ipstr):
     """
     convert ip string to int 
     """
-    vals= [int(item) for item in ipstr.split(".")]
-    return vals[0]*16777216+vals[1]*65536+vals[2]*256+vals[3]*1    
+    vals = [int(item) for item in ipstr.split(".")]
+    return vals[0] * 16777216 + vals[1] * 65536 + vals[2] * 256 + vals[3] * 1    
 
 
 def convertIntToIp(val):
@@ -25,14 +26,29 @@ def convertIntToIp(val):
     convert int value to string (ip)
     """
     vals = []
-    vals.append(val/16777216)
-    val = val%16777216
-    vals.append(val/65536)
-    val = val%65536
-    vals.append(val/256)
-    val=val%256
+    vals.append(val / 16777216)
+    val = val % 16777216
+    vals.append(val / 65536)
+    val = val % 65536
+    vals.append(val / 256)
+    val = val % 256
     vals.append(val)
     return ".".join([str(item) for item in vals])
+
+
+def convertIntToDateStr(val):
+    """
+    convert int value to datetime string 
+    """
+    d1 = datetime.datetime.fromordinal(val)
+    return d1.strftime("%Y-%m-%d")
+
+def convertDateStrToInt(val):
+    """
+    covnert datetime string to int value
+    """
+    d1 = datetime.datetime.strptime(val,"%Y-%m-%d")
+    return d1.toordinal()    
 
 """
 dnslist
@@ -53,8 +69,8 @@ EVILIP_LIST
 """
 const.EVILIPLIST_COLUMNS = (
     Column('id', 'id', controltype='hidden', show=False),
-    Column('startip', '开始地址',formatter=convertIntToIp,saveformatter=convertIpToInt,easyclass="easyui-validatebox",required="true"),
-    Column('endip', '结束地址',formatter=convertIntToIp,saveformatter=convertIpToInt,easyclass="easyui-validatebox",required="true"),
+    Column('startip', '开始地址', formatter=convertIntToIp, saveformatter=convertIpToInt, easyclass="easyui-validatebox", required="true"),
+    Column('endip', '结束地址', formatter=convertIntToIp, saveformatter=convertIpToInt, easyclass="easyui-validatebox", required="true"),
     Column('describ', '描述'),
 )
 
@@ -81,8 +97,8 @@ TRO_IP
 """
 const.TROIP_COLUMNS = (
     Column('id', '木马号', controltype='hidden', show=False),
-    Column('ip_addr', 'IP地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
-    Column('time', '使用时间'),
+    Column('ip_addr', 'IP地址', formatter=convertIntToIp, saveformatter=convertIpToInt,easyclass="easyui-validatebox", required="true"),
+    Column('time', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, easyclass="easyui-datebox", required="true"),
     Column('describ', '描述'),
 )
 
@@ -115,9 +131,9 @@ const.GLOBALPARA_SEARCH = (
 """
 const.USER_TROJAN_RULE_COLUMNS = (
     Column('id', 'id', controltype='hidden', show=False),
-    Column('srcip', '木马发起地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('srcip', '木马发起地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('sport', '木马发起端口'),
-    Column('dstip', '木马接收地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('dstip', '木马接收地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('dport', '木马接收端口'),
     Column('offset', '特征串偏移量'),
     Column('dept', '特征串检测长度'),
@@ -146,9 +162,9 @@ const.ALARM_COLUMNS = (
     Column('type', '报警类别'),
     Column('class', '报警级别'),
     Column('trojanid', '木马号'),
-    Column('dip', '被控主机地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('dip', '被控主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('dmac', '被控主机MAC地址'),
-    Column('sip', '控制主机地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('sip', '控制主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('scc', '控制主机所在国家'),
     Column('time', '报警时间'),
     Column('alarm_msg', '报警描述'),
@@ -167,9 +183,9 @@ const.EVENT_COLUMNS = (
     Column('psid', '事件规则号', controltype='hidden', show=False, defaultvalue=0),
     Column('time', '产生事件时间'),
     Column('risk', '事件危险值'),
-    Column('sip', '外部主机地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('sip', '外部主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('sport', '外部主机端口'),
-    Column('dip', '内部主机地址',formatter=convertIntToIp,saveformatter=convertIpToInt),
+    Column('dip', '内部主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('dmac', '内部主机MAC地址'),
     Column('dport', '内部主机端口'),
     Column('pro', '协议'),
