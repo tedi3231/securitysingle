@@ -14,7 +14,7 @@ def getMemoryInfo():
     for k,v in  [(item.split()[0],int(item.split()[1])/1024) for item in resultList]:
         result[k.split(':')[0]] = v    
     result["MemUsed"] = result['MemTotal'] - result['MemFree']
-    result["Percent"] = 100 -(float(result["MemUsed"])/result['MemTotal'])*100
+    result["Percent"] = 100 -(float(result["MemFree"])/result['MemTotal'])*100
     return result
 
 def get_df_data(datapath):

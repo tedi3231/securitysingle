@@ -166,7 +166,7 @@ const.ALARM_COLUMNS = (
     Column('dmac', '被控主机MAC地址'),
     Column('sip', '控制主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('scc', '控制主机所在国家'),
-    Column('time', '报警时间'),
+    Column('time', '报警时间',formatter=convertIntToDateStr),
     Column('alarm_msg', '报警描述'),
 )
 
@@ -198,6 +198,22 @@ const.EVENT_SEARCH = (
    {'name':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
 )
 
+"""
+USERS
+"""
+const.USERS_COLUMNS = (
+    Column('id', '编号', controltype='hidden', show=False),
+    Column('username', '用户名'),
+    Column('userpass', '密码',controltype="password"),
+    Column('remark', '备注'),
+    Column('permission', '权限'),
+    Column('createtime', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
+)
+
+const.USERS_SEARCH = (
+    {'name':'username', 'title':'用户名', 'validType':'', 'operation':'='},
+)
+
 const.entities = {   
     "dnslist":{"tablename":"DNS_LIST", "columns":const.DNSLIST_COLUMNS, "search":const.DNSLIST_SEARCH},
     "evilip":{"tablename":"EVILIP_LIST", "columns":const.EVILIPLIST_COLUMNS, "search":const.EVILIPLIST_SEARCH},
@@ -206,5 +222,6 @@ const.entities = {
     "globalpara": {"tablename":"GLOBALPARA", "columns":const.GLOBALPARA_COLUMNS, "search":const.GLOBALPARA_SEARCH},
     "alarm": {"tablename":"ALARM", "columns":const.ALARM_COLUMNS, "search":const.ALARM_SEARCH},
     "event": {"tablename":"EVENT", "columns":const.EVENT_COLUMNS, "search":const.EVENT_SEARCH},
-    "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH}
+    "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH},
+    "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH}
 }
