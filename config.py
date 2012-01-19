@@ -3,11 +3,8 @@ import os
 import re
 import tornado.options
 from tornado.options import define, options
-import basehandler
-from basehandler import BaseHandler
-import listhandler
-import otherhandler
-from webmodule import SearchModule,EntityModule,ColumnModule
+from controller import basehandler,listhandler,otherhandler
+from module.webmodule import SearchModule,EntityModule,ColumnModule
 
 define("port", default=9999, help="run on the given port", type=int)
 define("mysql_host", default="127.0.0.1:3306", help="blog database host")

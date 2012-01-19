@@ -3,8 +3,7 @@
 '''
 create and edit or remove entity from database
 '''
-import const
-import model
+import const,model
 import tornado.database
 from copy import copy
 from datetime import datetime

@@ -23,7 +23,7 @@ import unicodedata
 from tornado.options import define, options
 from datetime import datetime
 from config import handlers,settings
-import entity
+from model import entity
 
 class Application(tornado.web.Application):
     def __init__(self):        
