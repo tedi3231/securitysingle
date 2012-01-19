@@ -55,4 +55,18 @@ class USER_TROJAN_RULEHandler(BaseHandler):
         self.rendergriddata('usertrojanrule', '事件子因', '/usertrojanrule/list', canAdd=True, canRemove=False, canEdit=True)
         
     def post(self):        
-        self.write(self.griddata("usertrojanrule"))        
+        self.write(self.griddata("usertrojanrule")) 
+
+class USERSHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('users', '用户信息', '/users/list', canAdd=True, canRemove=False, canEdit=True)
+        
+    def post(self):        
+        self.write(self.griddata("users")) 
+
+class RESOURCESHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('resources', '资源信息', '/resources/list', canAdd=True, canRemove=False, canEdit=True)
+        
+    def post(self):        
+        self.write(self.griddata("resources"))

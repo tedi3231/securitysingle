@@ -17,7 +17,16 @@ class Column(object):
         self.show=show
         self.validType=validType        
         self.required = required
-
+    
+    def _toInputHtml(self):
+        return ""
+    
+    def _toSelectHtml(self):
+        return "";
+    
+    def _toCheckBoxListHtml(self):
+        return "";
+        
     def __repr__(self):
     	vals = self.__dict__
         keys = [item for item in vals if item not in ('easyclass','control','controltype','source',

@@ -25,6 +25,8 @@ handlers = [
             (r"/alarm/list", listhandler.ALARMHandler),
             (r"/event/list",listhandler.EVENTHandler),
             (r"/usertrojanrule/list",listhandler.USER_TROJAN_RULEHandler),
+            (r"/users/list",listhandler.USERSHandler),
+            (r"/resources/list",listhandler.RESOURCESHandler),
             (r"/system/info",otherhandler.SystemHandler),
             (r"/auth/login", basehandler.AuthLoginHandler),
             (r"/auth/logout", basehandler.AuthLogoutHandler),

@@ -50,6 +50,10 @@ def convertDateStrToInt(val):
     d1 = datetime.datetime.strptime(val,"%Y-%m-%d")
     return d1.toordinal()    
 
+def generateMd5(val):
+    import md5
+    return md5.md5(val).hexdigest()
+
 """
 dnslist
 """
@@ -204,14 +208,34 @@ USERS
 const.USERS_COLUMNS = (
     Column('id', '编号', controltype='hidden', show=False),
     Column('username', '用户名'),
-    Column('userpass', '密码',controltype="password"),
+    Column('userpass', '密码',controltype="password",saveformatter=generateMd5,show=False),
     Column('remark', '备注'),
-    Column('permission', '权限'),
-    Column('createtime', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
+    #Column('permission', '权限'),
+    Column('createdtime', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
 )
 
 const.USERS_SEARCH = (
     {'name':'username', 'title':'用户名', 'validType':'', 'operation':'='},
+)
+
+"""
+资源
+"""
+const.RESOURCES_COLUMNS = (
+    Column('id', '编号', controltype='hidden', show=False),
+    Column('controller', 'Controller'),
+    Column('action', 'Action'),
+    Column('module', '模块'),
+    Column('title', '标题'),
+    Column('isNav', '是否为菜单项'),
+    Column('sortnum', '排序'),
+    Column('createdtime', '创建时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
+)
+
+const.RESOURCES_SEARCH = (
+    {'name':'Controller', 'title':'Controller', 'validType':'', 'operation':'='},
+    {'name':'Action', 'title':'Action', 'validType':'', 'operation':'='},
+    {'name':'Module', 'title':'模块', 'validType':'', 'operation':'='},
 )
 
 const.entities = {   
@@ -223,5 +247,6 @@ const.entities = {
     "alarm": {"tablename":"ALARM", "columns":const.ALARM_COLUMNS, "search":const.ALARM_SEARCH},
     "event": {"tablename":"EVENT", "columns":const.EVENT_COLUMNS, "search":const.EVENT_SEARCH},
     "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH},
-    "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH}
+    "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH},
+    "resources": {"tablename":"RESOURCES", "columns":const.RESOURCES_COLUMNS, "search":const.RESOURCES_SEARCH}
 }
