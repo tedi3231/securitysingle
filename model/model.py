@@ -223,10 +223,10 @@ const.USERS_SEARCH = (
 """
 const.RESOURCES_COLUMNS = (
     Column('id', '编号', controltype='hidden', show=False),
-    Column('controller', 'Controller'),
-    Column('action', 'Action'),
     Column('module', '模块'),
     Column('title', '标题'),
+    Column('controller', 'Controller'),
+    Column('action', 'Action',defaultvalue=''),
     Column('isNav', '是否为菜单项'),
     Column('sortnum', '排序'),
     Column('createdtime', '创建时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    

@@ -18,6 +18,20 @@ class Column(object):
         self.validType=validType        
         self.required = required
     
+    def getStartTag(self):
+        results = []        
+        keys = [item for item in self.__dict__ if item not in ('easyclass','control','controltype','source',
+                                                      'formatter','saveformatter','defaultvalue','validType')]
+        if self.control == "input":
+            results = None
+        return results
+    
+    def getEndTag(self):
+        return []
+    
+    def getMiddleTags(self):
+        return []
+            
     def _toInputHtml(self):
         return ""
     
