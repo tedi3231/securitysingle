@@ -4,8 +4,15 @@ import datetime
 from schema import Column
 import const
 
-author_list = {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
+author_list =  {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
 dnstypelist = {'rows':[{'name':'白域名', 'id':'1'}, {'name':'恶意域名', 'id':'2'}, {'name':'动态域名', 'id':'3'}], 'valuetext':'name', 'valuename':'id'}
+yesnolist =    {'rows':[{'name':'是','id':'1'},{'name':'否','id':'0'}],'valuetext':'name','valuename':'id'}
+modulelist =    {'rows':[{'name':'参数管理','id':'参数管理'},{'name':'报警信息','id':'报警信息'},{'name':'警报分析','id':'警报分析'},{'name':'系统管理','id':'系统管理'},{'name':'系统状态','id':'系统状态'}],'valuetext':'name','valuename':'id'}
+
+def yesnoFormat( val ):
+    if str(val) =='1':
+        return '是'
+    return '否'
 
 def dnstypeformat(dnstype):
     temp = [item['name']  for item in dnstypelist['rows'] if str(item['id']) == str(dnstype)]
@@ -223,11 +230,11 @@ const.USERS_SEARCH = (
 """
 const.RESOURCES_COLUMNS = (
     Column('id', '编号', controltype='hidden', show=False),
-    Column('module', '模块'),
+    Column('module', '模块', control="select", controltype='select', easyclass='easyui-combobox', source=modulelist),
     Column('title', '标题'),
     Column('controller', 'Controller'),
     Column('action', 'Action',defaultvalue=''),
-    Column('isNav', '是否为菜单项'),
+    Column('isNav', '是否为菜单项',formatter = yesnoFormat, control="select", controltype='select', easyclass='easyui-combobox', source=yesnolist),
     Column('sortnum', '排序'),
     Column('createdtime', '创建时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
 )
