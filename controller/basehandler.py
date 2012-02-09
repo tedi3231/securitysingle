@@ -28,7 +28,10 @@ class BaseHandler(tornado.web.RequestHandler):
             if k in colformats:                               
                 arguments[k][0] = colformats[k](arguments[k][0])                
         return arguments
-    
+
+    def afterSave(self,entityname,arguments):
+        pass    
+
     def beforeshowentityformat(self,entityname,item):
         colformats = {}
         for col in  const.entities[entityname]['columns']:

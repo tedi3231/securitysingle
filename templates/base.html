@@ -41,6 +41,7 @@
         <script language="javascript">
             $(document).ready(function() {
                 $('#menu').tree();
+                openpage('报警信息','/alarm/list');
             });
 
         </script>
@@ -72,13 +73,7 @@
                         </li>
                         <li>
                             <span><a href="#" onclick="openpage('所有域名','/dns/list')">所有域名配置</a></span>
-                        </li>
-                        <li>
-                            <span><a href="#" onclick="openpage('DNS木马触发器','/trodns/list')">DNS木马触发器</a></span>
-                        </li>
-                        <li>
-                            <span><a href="#" onclick="openpage('IP木马触发器','/troip/list')">IP木马触发器</a></span>
-                        </li>
+                        </li>                        
                         <li>
                             <span><a href="#" onclick="openpage('检测参数配置','/globalpara/list')">检测参数配置</a></span>
                         </li>
