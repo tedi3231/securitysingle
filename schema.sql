@@ -46,7 +46,7 @@ CREATE TABLE RESOURCES(
     action VARCHAR(100) NOT NULL,
     module VARCHAR(100) NOT NULL,
     title VARCHAR(100) NOT NULL,
-    isNav BIT NOT NULL,    
+    isNav INT NOT NULL,    
     sortnum VARCHAR(100) NOT NULL, 
     createdtime INT NOT NULL       
 );
@@ -68,17 +68,18 @@ CREATE TABLE EVILIP_LIST(
 );
 
 DROP TABLE IF EXISTS TRO_IP;
-CREATE TABLE TRO_IP(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE TRO_IP( 
+    trojan_id BIGINT NOT NULL,
     ip_addr BIGINT NOT NULL,
     time INT NOT NULL,
     describ varchar(255) 
 );
 
 DROP TABLE IF EXISTS TRO_DNS;
-CREATE TABLE TRO_DNS(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    dnsname varchar(255) NOT NULL,    
+CREATE TABLE TRO_DNS( 
+    trojan_id BIGINT NOT NULL,
+    dnsname varchar(255) NOT NULL,   
+    time INT NOT NULL, 
     describ varchar(255) 
 );
 
@@ -108,7 +109,8 @@ CREATE TABLE ALARM(
     sip BIGINT NOT NULL,
     scc varchar(64) NOT NULL,
     time INT NOT NULL,    
-    alarm_msg varchar(512) NOT NULL 
+    alarm_msg varchar(512) NOT NULL,
+    dns_name varchar(255) NULL
 );
 
 DROP TABLE IF EXISTS ALARM_EVENT;
@@ -132,6 +134,7 @@ CREATE TABLE EVENT(
     pro INT,
     sflag INT,
     extradata varchar(255),
+    countnum INT DEFAULT 0,
     dns_name varchar(255)
 );
 
