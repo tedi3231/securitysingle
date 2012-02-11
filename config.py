@@ -3,7 +3,7 @@ import os
 import re
 import tornado.options
 from tornado.options import define, options
-from controller import basehandler,listhandler,otherhandler
+from controller import basehandler,listhandler,otherhandler,reporthandler
 from module.webmodule import SearchModule,EntityModule,ColumnModule
 
 define("port", default=9999, help="run on the given port", type=int)
@@ -34,7 +34,8 @@ handlers = [
             (r"/auth/login", basehandler.AuthLoginHandler),
             (r"/auth/logout", basehandler.AuthLogoutHandler),
             (r"/report/test", otherhandler.ChartTestHandler),
-            (r"/test/testhandler",otherhandler.TestAjaxHandler)
+            (r"/test/testhandler",otherhandler.TestAjaxHandler),
+            #(r"/report/test",reporthandler.TestReportHandler)
         ]
 
 settings = dict(

@@ -18,7 +18,7 @@
         <link rel="alternate" href="/feed" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}"/>
         {% block head %}{% end %}
         <script language="JavaScript" type="text/javascript">
-            function openpage(name, url) {
+            function openpage(name, url,hasprogress) {
                 if($('#tt').tabs('exists', name)) {
                     $('#tt').tabs('select', name);
                 } else {
@@ -27,13 +27,17 @@
                         closable : true,
                         content : '<div id="' + name + '" style="height:99%;padding-top:2px;"></div>'
                     });
-                    $.messager.progress({
-                        title : '请稍后',
-                        msg : '页面读取中.....'
-                    });
+                    if(hasprogress && hasprogress == true ){
+                        $.messager.progress({
+                            title : '请稍后',
+                            msg : '页面读取中.....'
+                        });
+                    }
                     $('#' + name).load(url, null, function() {
-                        $.messager.progress('close');
-                        $('#' + name).easyuiparse().unobtrusiveparse();
+                        if( hasprogress && hasprogress==true){                        
+                            $.messager.progress('close');
+                            $('#' + name).easyuiparse().unobtrusiveparse();
+                        }                        
                     });
                 }
             }
@@ -100,7 +104,7 @@
                             <span><a href="#" onclick="openpage('警报事件分析','/alarm/analyse')">警报事件分析</a></span>
                         </li>
                         <li>
-                            <span><a href="#" onclick="openpage('警报事件态势','/system/info')">警报事件态势</a></span>
+                            <span><a href="#" onclick="openpage('警报事件态势','/report/test',false)">警报事件态势</a></span>
                         </li>
                         <li>
                             <span><a href="#" onclick="openpage('警报事件统计','/system/info')">警报事件统计</a></span>
@@ -109,7 +113,7 @@
                             <span><a href="#" onclick="openpage('警报因子分析','/event/analyse')">事件因子分析</a></span>
                         </li>
                         <li>
-                            <span><a href="#" onclick="openpage('事件因子态势','/system/info')">事件因子态势</a></span>
+                            <span><a href="#" onclick="openpage('事件因子态势','/system/info',false)">事件因子态势</a></span>
                         </li>
                         <li>
                             <span><a href="#" onclick="openpage('事件因子统计','/system/info')">事件因子统计</a></span>
