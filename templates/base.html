@@ -35,9 +35,9 @@
                     }
                     $('#' + name).load(url, null, function() {
                         if( hasprogress && hasprogress==true){                        
-                            $.messager.progress('close');
-                            $('#' + name).easyuiparse().unobtrusiveparse();
+                            $.messager.progress('close');                           
                         }                        
+                        $('#' + name).easyuiparse().unobtrusiveparse();
                     });
                 }
             }
