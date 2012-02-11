@@ -30,6 +30,8 @@ handlers = [
             (r"/system/info",otherhandler.SystemHandler),
             (r"/auth/login", basehandler.AuthLoginHandler),
             (r"/auth/logout", basehandler.AuthLogoutHandler),
+            (r"/report/test", otherhandler.ChartTestHandler),
+            (r"/test/testhandler",otherhandler.TestAjaxHandler)
         ]
 
 settings = dict(
