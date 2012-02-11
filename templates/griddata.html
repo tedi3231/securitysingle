@@ -127,14 +127,10 @@
     <div id="search_{{entityname}}" class="easyui-accordion" collapsed="true">
         <div title="查询条件" iconCls="icon-search">
             <form action="{{url}}" method="post" id="search">
-                <div>
-                    {{xsrf_form_html()}}
+                {{xsrf_form_html()}}
+                <div>                    
                     {{modules.Search(search_columns)}}
-                </div>
-                <div style="padding-top:20px;">
-                    <a id="asearch" href="#" iconCls="icon-search" plain="true"
-                    class="easyui-linkbutton">查询</a>
-                </div>
+                </div>               
             </form>
         </div>
     </div>

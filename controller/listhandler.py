@@ -31,24 +31,39 @@ class TROIPHandler(BaseHandler):
 
 class GLOBALPARAHandler(BaseHandler):
     def get(self):
-        self.rendergriddata('globalpara', '检测参数', '/globalpara/list')
+        self.rendergriddata('globalpara', '检测参数', '/globalpara/list',canAdd=False, canEdit=True, canRemove=False)
         
     def post(self):        
         self.write(self.griddata("globalpara"))
 
 class ALARMHandler(BaseHandler):
     def get(self):        
-        self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False)
+        self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False)
         
     def post(self):        
         self.write(self.griddata("alarm"))
 
 class EVENTHandler(BaseHandler):
     def get(self):        
-        self.rendergriddata('event', '事件子因', '/event/list', canAdd=True, canRemove=False, canEdit=False)
+        self.rendergriddata('event', '事件子因', '/event/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False)
         
     def post(self):        
         self.write(self.griddata("event"))
+
+class ALARMAnalyseHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('alarm_1', '报警信息', '/alarm/analyse', canAdd=False, canRemove=False, canEdit=False,showsearch=True)
+        
+    def post(self):        
+        self.write(self.griddata("alarm_1"))
+
+class EVENTAnalyseHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('event_1', '事件子因', '/event/analyse', canAdd=False, canRemove=False, canEdit=False,showsearch=True)
+        
+    def post(self):        
+        self.write(self.griddata("event_1"))
+
         
 class USER_TROJAN_RULEHandler(BaseHandler):
     def get(self):        
@@ -70,3 +85,10 @@ class RESOURCESHandler(BaseHandler):
         
     def post(self):        
         self.write(self.griddata("resources"))
+
+class LOGINFOHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('loginfo', '日志信息', '/loginfo/list', canAdd=False, canRemove=False, canEdit=False)
+        
+    def post(self):        
+        self.write(self.griddata("loginfo"))

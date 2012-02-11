@@ -30,7 +30,11 @@ class BaseHandler(tornado.web.RequestHandler):
         return arguments
 
     def afterSave(self,entityname,arguments):
-        pass    
+        """
+        when add or edit method excutes success,call it
+        """
+        if const.entities[entityname].has_key("aftersave") and const.entities[entityname]['aftersave']:
+            const.entities[entityname]['aftersave']()    
 
     def beforeshowentityformat(self,entityname,item):
         colformats = {}
@@ -56,7 +60,15 @@ class BaseHandler(tornado.web.RequestHandler):
                         item[k] = fitem[k](item[k])
         #print total,datarows
         return rows
-        
+
+    def writeLog(self,action,entityname,msg):
+        content = str.format("{0} at {1} {4} {2},values is {3}",self.get_current_user(),datetime.now().isoformat(),
+                             const.entities[entityname]['tablename'],msg,action)
+        print content
+        arguments = {"content":[content],"createtime":[datetime.now()]}
+        result = entity.createEntity("loginfo", arguments)
+        print result
+    
     def griddata(self, entityName):
         total, datarows = entity.query(entityName, self.request.arguments)
         datarows = self.beforeshowgridformat(entityName,datarows)
@@ -65,9 +77,11 @@ class BaseHandler(tornado.web.RequestHandler):
         gd['rows'] = datarows        
         return tornado.escape.json_encode(gd)
     
-    def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True):
+    def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True,showsearch=True):
         columns = const.entities[entityname]['columns']
         search_columns = const.entities[entityname]['search']
+        if showsearch <> True:
+            search_columns = []
         self.render("griddata.html", entityname=entityname, url=url, title=title,
                     rownumbers="true", pagination="true", columns=columns,
                     search_columns=search_columns, canAdd=canAdd, canEdit=canEdit, canRemove=canRemove
@@ -79,6 +93,8 @@ class RemoveHandler(BaseHandler):
         entityId = self.get_argument("id", "0")
         print entityname, entityId
         result = entity.removeEntity(entityname, entityId)
+        if result['result']=='success':
+            self.writeLog( "remove",entityname,str(arguments))
         self.write(tornado.escape.json_encode(result))
 
 class EditHandler(BaseHandler):
@@ -95,6 +111,9 @@ class EditHandler(BaseHandler):
         entityname = self.get_argument("entityname", "")
         arguments = self.beforesaveformat(entityname, self.request.arguments)
         result = entity.editEntity(entityname, arguments)
+        if result['result']=='success':
+            self.afterSave(entityname,arguments)
+            self.writeLog("update", entityname,str(arguments))
         self.write(tornado.escape.json_encode(result))
 
 class CreateFormHandler(BaseHandler):
@@ -111,6 +130,9 @@ class CreateFormHandler(BaseHandler):
         entityname = self.get_argument("entityname", "")
         arguments = self.beforesaveformat(entityname, self.request.arguments)
         result = entity.createEntity(entityname, arguments)
+        if result['result']=='success':
+            self.afterSave(entityname,arguments)
+            self.writeLog("create",entityname,str(arguments))      
         self.write(tornado.escape.json_encode(result))
         
 

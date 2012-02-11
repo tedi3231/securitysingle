@@ -3,6 +3,8 @@
 import datetime
 from schema import Column
 import const
+import os
+import copy
 
 author_list =  {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
 dnstypelist = {'rows':[{'name':'白域名', 'id':'1'}, {'name':'恶意域名', 'id':'2'}, {'name':'动态域名', 'id':'3'}], 'valuetext':'name', 'valuename':'id'}
@@ -60,6 +62,13 @@ def convertDateStrToInt(val):
 def generateMd5(val):
     import md5
     return md5.md5(val).hexdigest()
+
+def restartSnort():
+    """
+    restart snort services
+    """
+    print "restart services"
+    os.popen("service abc restart")
 
 """
 dnslist
@@ -246,15 +255,28 @@ const.RESOURCES_SEARCH = (
     {'name':'Module', 'title':'模块', 'validType':'', 'operation':'='},
 )
 
-const.entities = {   
+const.LOGINFO_COLUMNS = (
+    Column('id', 'id', controltype='hidden', show=False),
+    Column('content', '内容',width=1000),
+    Column('createdtime', '创建时间',show=False),    
+)
+
+const.LOGINFO_SEARCH = (
+    {'name':'content', 'title':'内容', 'validType':'', 'operation':'like'},
+)
+
+const.entities = {
     "dnslist":{"tablename":"DNS_LIST", "columns":const.DNSLIST_COLUMNS, "search":const.DNSLIST_SEARCH},
     "evilip":{"tablename":"EVILIP_LIST", "columns":const.EVILIPLIST_COLUMNS, "search":const.EVILIPLIST_SEARCH},
     "trodns":{"tablename":"TRO_DNS", "columns":const.TRODNS_COLUMNS, "search":const.TRODNS_SEARCH},
     "troip": {"tablename":"TRO_IP", "columns":const.TROIP_COLUMNS, "search":const.TROIP_SEARCH},
-    "globalpara": {"tablename":"GLOBALPARA", "columns":const.GLOBALPARA_COLUMNS, "search":const.GLOBALPARA_SEARCH},
+    "globalpara": {"tablename":"GLOBALPARA", "columns":const.GLOBALPARA_COLUMNS, "search":const.GLOBALPARA_SEARCH,"aftersave":restartSnort},
     "alarm": {"tablename":"ALARM", "columns":const.ALARM_COLUMNS, "search":const.ALARM_SEARCH},
     "event": {"tablename":"EVENT", "columns":const.EVENT_COLUMNS, "search":const.EVENT_SEARCH},
     "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH},
     "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH},
-    "resources": {"tablename":"RESOURCES", "columns":const.RESOURCES_COLUMNS, "search":const.RESOURCES_SEARCH}
+    "resources": {"tablename":"RESOURCES", "columns":const.RESOURCES_COLUMNS, "search":const.RESOURCES_SEARCH},
+    "loginfo": {"tablename":"LOGINFO", "columns":const.LOGINFO_COLUMNS, "search":const.LOGINFO_SEARCH}
 }
+const.entities["alarm_1"] = copy.copy(const.entities["alarm"])
+const.entities["event_1"] = copy.copy(const.entities["event"])
