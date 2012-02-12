@@ -10,3 +10,8 @@ IF NEW.trojanid > 0 THEN
 END IF;
 END;
 
+
+-- 报表的数据查询
+-- 涉及到的日期值都为INT，可以通过from_unixtime()方法转换为日期类型
+select username, count(username) as c, Month(from_unixtime(createdtime)) from USERS group by Month(from_unixtime(createdtime)),username order by c;
+

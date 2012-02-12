@@ -1,6 +1,7 @@
 #coding=utf8
 #from griddata import Column
 import datetime
+import time
 from schema import Column
 import const
 import os
@@ -29,7 +30,6 @@ def convertIpToInt(ipstr):
     vals = [int(item) for item in ipstr.split(".")]
     return vals[0] * 16777216 + vals[1] * 65536 + vals[2] * 256 + vals[3] * 1    
 
-
 def convertIntToIp(val):
     """
     convert int value to string (ip)
@@ -44,20 +44,19 @@ def convertIntToIp(val):
     vals.append(val)
     return ".".join([str(item) for item in vals])
 
-
 def convertIntToDateStr(val):
     """
     convert int value to datetime string 
     """
-    d1 = datetime.datetime.fromordinal(val)
-    return d1.strftime("%Y-%m-%d")
+    d1 = datetime.datetime.fromtimestamp(val)
+    return d1.strftime("%Y-%m-%d %H:%M:%S")
 
 def convertDateStrToInt(val):
     """
     covnert datetime string to int value
     """
-    d1 = datetime.datetime.strptime(val,"%Y-%m-%d")
-    return d1.toordinal()    
+    d1 = datetime.datetime.strptime(val,"%Y-%m-%d %H:%M:%S")    
+    return  (int)(time.mktime(d1.timetuple()))
 
 def generateMd5(val):
     import md5
@@ -228,7 +227,7 @@ const.USERS_COLUMNS = (
     Column('userpass', '密码',controltype="password",saveformatter=generateMd5,show=False),
     Column('remark', '备注'),
     #Column('permission', '权限'),
-    Column('createdtime', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
+    Column('createdtime', '使用时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),    
 )
 
 const.USERS_SEARCH = (
