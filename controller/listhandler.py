@@ -1,5 +1,7 @@
 #coding=utf8
 from basehandler import BaseHandler
+from model import entity
+import tornado.web
 
 class DNSListHandler(BaseHandler):    
     def get(self):        
@@ -81,10 +83,44 @@ class USERSHandler(BaseHandler):
 
 class RESOURCESHandler(BaseHandler):
     def get(self):        
-        self.rendergriddata('resources', '资源信息', '/resources/list', canAdd=True, canRemove=False, canEdit=True)
+        self.rendergriddata('resources', '资源信息', '/resources/list', canAdd=True, canRemove=True, canEdit=True)
         
     def post(self):        
         self.write(self.griddata("resources"))
+
+class PERMISIONHandler(BaseHandler):
+    def get(self):        
+        self.rendergriddata('permision', '资源信息', '/permision/list', canAdd=True, canRemove=True, canEdit=True,
+                            addAction="/permision/create",editAction="/permision/create")
+        
+    def post(self):        
+        self.write(self.griddata("permision"))
+
+class PERMISIONEditHandler(BaseHandler):
+    def get(self):
+        entityId = self.get_argument("id", "0")
+        entityItem = None
+        print entityId
+        if entityId <> "0":
+            entityItem = entity.getEntity("permision",entityId)  
+        else:
+            entityItem = {"id":"","userid":"","resourceid":""}      
+        users = entity.queryall("users")
+        resources = entity.queryall("resources")
+        self.render("permisionedit.html",pitem=entityItem,users=users,controllers=resources)
+
+    def post(self):
+        entityname = "users_resources"
+        arguments = self.beforesaveformat(entityname, self.request.arguments)
+        result = {}
+        if arguments.has_key("id") and arguments['id'][0] and int(arguments['id'][0])>0:
+            result = entity.editEntity(entityname, arguments)            
+        else:
+            result = entity.createEntity(entityname, arguments)
+        if result['result']=='success':
+            self.afterSave(entityname,arguments)
+            self.writeLog("create",entityname,str(arguments))      
+        self.write(tornado.escape.json_encode(result))        
 
 class LOGINFOHandler(BaseHandler):
     def get(self):        

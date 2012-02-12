@@ -77,14 +77,16 @@ class BaseHandler(tornado.web.RequestHandler):
         gd['rows'] = datarows        
         return tornado.escape.json_encode(gd)
     
-    def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True,showsearch=True):
+    def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True,showsearch=True,
+                       addAction="/data/create",editAction="/data/edit",removeAction="/data/remove"):
         columns = const.entities[entityname]['columns']
         search_columns = const.entities[entityname]['search']
         if showsearch <> True:
             search_columns = []
         self.render("griddata.html", entityname=entityname, url=url, title=title,
                     rownumbers="true", pagination="true", columns=columns,
-                    search_columns=search_columns, canAdd=canAdd, canEdit=canEdit, canRemove=canRemove
+                    search_columns=search_columns, canAdd=canAdd, canEdit=canEdit, canRemove=canRemove,
+                    addAction=addAction,editAction=editAction,removeAction=removeAction
                    )
 
 class RemoveHandler(BaseHandler):
@@ -94,7 +96,7 @@ class RemoveHandler(BaseHandler):
         print entityname, entityId
         result = entity.removeEntity(entityname, entityId)
         if result['result']=='success':
-            self.writeLog( "remove",entityname,str(arguments))
+            self.writeLog( "remove",entityname,str(self.request.arguments))
         self.write(tornado.escape.json_encode(result))
 
 class EditHandler(BaseHandler):

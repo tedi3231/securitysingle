@@ -10,7 +10,11 @@ import copy
 author_list =  {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
 dnstypelist = {'rows':[{'name':'白域名', 'id':'1'}, {'name':'恶意域名', 'id':'2'}, {'name':'动态域名', 'id':'3'}], 'valuetext':'name', 'valuename':'id'}
 yesnolist =    {'rows':[{'name':'是','id':'1'},{'name':'否','id':'0'}],'valuetext':'name','valuename':'id'}
-modulelist =    {'rows':[{'name':'参数管理','id':'参数管理'},{'name':'报警信息','id':'报警信息'},{'name':'警报分析','id':'警报分析'},{'name':'系统管理','id':'系统管理'},{'name':'系统状态','id':'系统状态'}],'valuetext':'name','valuename':'id'}
+modulelist =    {'rows':[{'name':'参数管理','id':'systemparam'},{'name':'报警信息','id':'alarminfo'},{'name':'警报分析','id':'alarmanalysys'},{'name':'系统管理','id':'systemmanager'},{'name':'系统状态','id':'systemstatus'}],'valuetext':'name','valuename':'id'}
+
+def moduleFormat(val):
+    temp = [item for item in modulelist["rows"] if item["id"]==val]
+    return (temp and len(temp)>0) and temp[0]["name"] or "没有找到对应模块"
 
 def yesnoFormat( val ):
     if str(val) =='1':
@@ -239,19 +243,49 @@ const.USERS_SEARCH = (
 """
 const.RESOURCES_COLUMNS = (
     Column('id', '编号', controltype='hidden', show=False),
-    Column('module', '模块', control="select", controltype='select', easyclass='easyui-combobox', source=modulelist),
+    Column('module', '模块', control="select", controltype='select', formatter=moduleFormat, easyclass='easyui-combobox', source=modulelist),
     Column('title', '标题'),
     Column('controller', 'Controller'),
     Column('action', 'Action',defaultvalue=''),
     Column('isNav', '是否为菜单项',formatter = yesnoFormat, control="select", controltype='select', easyclass='easyui-combobox', source=yesnolist),
     Column('sortnum', '排序'),
-    Column('createdtime', '创建时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d")),    
+    Column('createdtime', '创建时间',formatter=convertIntToDateStr, saveformatter=convertDateStrToInt, controltype="hidden",defaultvalue=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),    
 )
 
 const.RESOURCES_SEARCH = (
     {'name':'Controller', 'title':'Controller', 'validType':'', 'operation':'='},
     {'name':'Action', 'title':'Action', 'validType':'', 'operation':'='},
     {'name':'Module', 'title':'模块', 'validType':'', 'operation':'='},
+)
+
+"""
+权限
+"""
+const.PERMISION_COLUMNS = (
+    Column('id', '编号', controltype='hidden', show=False),
+    Column('userid', '用户编号', controltype='hidden', show=False),
+    Column('resourceid', '资源编号', controltype='hidden', show=False),
+    Column('username', '用户名'),
+    Column('module', '模块', control="select", controltype='select', formatter=moduleFormat, easyclass='easyui-combobox', source=modulelist),
+    Column('title', '标题'),
+    Column('controller', 'Controller'),
+)
+
+const.PERMISION_SEARCH = (
+    {'name':'username', 'title':'用户名称', 'validType':'', 'operation':'='},  
+)
+
+"""
+真正的权限表
+"""
+const.USERS_RESOURCES_COLUMNS = (
+    Column('id', '编号', controltype='hidden', show=False),
+    Column('userid', '用户编号', controltype='hidden', show=False),
+    Column('resourceid', '资源编号', controltype='hidden', show=False),  
+)
+
+const.USERS_RESOURCES_SEARCH = (
+    {'name':'id', 'title':'id', 'validType':'', 'operation':'='},  
 )
 
 const.LOGINFO_COLUMNS = (
@@ -275,6 +309,8 @@ const.entities = {
     "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH},
     "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH},
     "resources": {"tablename":"RESOURCES", "columns":const.RESOURCES_COLUMNS, "search":const.RESOURCES_SEARCH},
+    "permision": {"tablename":"PERMISION_VIEW", "columns":const.PERMISION_COLUMNS, "search":const.PERMISION_SEARCH},
+    "users_resources": {"tablename":"USERS_RESOURCES", "columns":const.USERS_RESOURCES_COLUMNS, "search":const.USERS_RESOURCES_SEARCH},
     "loginfo": {"tablename":"LOGINFO", "columns":const.LOGINFO_COLUMNS, "search":const.LOGINFO_SEARCH}
 }
 const.entities["alarm_1"] = copy.copy(const.entities["alarm"])

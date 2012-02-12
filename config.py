@@ -29,6 +29,8 @@ handlers = [
             (r"/usertrojanrule/list",listhandler.USER_TROJAN_RULEHandler),
             (r"/users/list",listhandler.USERSHandler),
             (r"/resources/list",listhandler.RESOURCESHandler),
+            (r"/permision/list",listhandler.PERMISIONHandler),
+            (r"/permision/create",listhandler.PERMISIONEditHandler),
             (r"/loginfo/list",listhandler.LOGINFOHandler),
             (r"/system/info",otherhandler.SystemHandler),
             (r"/auth/login", basehandler.AuthLoginHandler),

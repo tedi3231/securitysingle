@@ -175,3 +175,10 @@ CREATE TABLE LOGINFO(
     content varchar(200) NOT NULL,
     createtime datetime
 );
+
+DROP VIEW IF EXISTS PERMISION_VIEW;
+CREATE VIEW PERMISION_VIEW AS 
+    SELECT ur.id,ur.resourceid,ur.userid,r.module,r.controller,r.title,u.username 
+        FROM USERS AS u,RESOURCES as r, USERS_RESOURCES as ur
+        WHERE u.id = ur.userid AND ur.resourceid = r.id
+

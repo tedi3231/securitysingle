@@ -130,6 +130,15 @@ def query(entityName, arguments):
     datarows = db.query(rowsQuery)
     return total, datarows
 
+def queryall(entityName):
+    """
+    Query all data rows
+    """
+    tablename = const.entities[entityName]["tablename"]   
+    rowsQuery = str.format("select * from {0} ", tablename)
+    datarows = db.query(rowsQuery)
+    return datarows
+
 if __name__ == "__main__":
     #print removeEntity("author",1)
     #print _getInsertColumnNames("author")

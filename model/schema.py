@@ -70,8 +70,9 @@ class Column(object):
             rows = vals['source']['rows']
             valuename = vals['source']['valuename']
             valuetext = vals['source']['valuetext']
-            for row in rows:			    
-	        	strList.append(str.format("<option value='{0}' {2}>{1}</option>",row[valuename],row[valuetext],
+            for row in rows:
+                print row[valuename]
+                strList.append(str.format("<option value='{0}' {2}>{1}</option>",row[valuename],row[valuetext],
 					  "selected" if str(row[valuename])==str(vals['defaultvalue']) else ''))	
             strList.append("</select>")
         return " ".join(strList)

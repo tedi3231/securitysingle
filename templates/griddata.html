@@ -9,11 +9,11 @@
             return false;
         }
         //alert("valid true");
-        $.post("/data/create", $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
+        $.post("{{addAction}}", $("#dialog_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
             if(data.result == "success") {
                 $("div#search_{{entityname}} #asearch").click();
                 $("#dialog_{{entityname}}").dialog("close");
-                $("form[action='/data/create']")[0].reset();
+                $("form[action='{{addAction}}']")[0].reset();
             } else {
                 $.messager.alert('error', 'create data failed');
             }
@@ -29,7 +29,7 @@
             return false;
         }
 
-        $.post("/data/remove", {
+        $.post("{{removeAction}}", {
             'entityname' : '{{entityname}}',
             'id' : row.id,
             '_xsrf' : $("input[name=_xsrf]").val()
@@ -53,7 +53,7 @@
 
         var dialogId = "dialog_edit_{{entityname}}";
         var $dialog = $("#" + dialogId);
-        var h = "/data/edit?entityname={{entityname}}&id=" + row.id;
+        var h = "{{editAction}}?entityname={{entityname}}&id=" + row.id;
         //$dialog.dialog("options").href = h;
         //alert($dialog.dialog("options").href);
         //alert(h);
@@ -70,11 +70,11 @@
     }
 
     function editSubmit() {
-        $.post("/data/edit", $("#dialog_edit_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
+        $.post("{{editAction}}", $("#dialog_edit_{{entityname}} form#{{entityname}}_add").serializeObject(), function(data) {
             if(data.result == "success") {
                 $("div#search_{{entityname}} #asearch").click();
                 $("#dialog_edit_{{entityname}}").dialog("close");
-                $("form[action='/data/edit']")[0].reset();
+                $("form[action='{{editAction}}']")[0].reset();
             } else {
                 $.messager.alert('error', 'edit data failed');
             }
@@ -159,7 +159,7 @@
     {% if canAdd==True %} <!-- add dialog start -->
     <div id="dialog_{{entityname}}" class="easyui-dialog" style="padding:5px;width:750px;height:500px;"
     title="添加" iconCls="icon-ok" modal="true"  buttons="#dlg_{{entityname}}_buttons" closed="true"
-    href="/data/create?entityname={{entityname}}"></div>
+    href="{{addAction}}?entityname={{entityname}}"></div>
     <div id="dlg_{{entityname}}_buttons">
         <a id="{{entityname}}_btn_add" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
         <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dialog_{{entityname}}').dialog('close')">取消</a>
