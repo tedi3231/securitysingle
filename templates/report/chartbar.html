@@ -29,13 +29,13 @@
                     plotOptions:{
                         column:{
                             events:{
-                                click:function(e){alert('click');}
+                                click:function(e){openpage('警报事件分析','/alarm/analyse');}
                             }
                         }
                     },
 					series : eval("("+point+")")
 				};
-				chartbar = new Highcharts.Chart(options);
+				var chartbar = new Highcharts.Chart(options);
 				// call it again after one second
 				//setTimeout(requestData, 10000);
 			},
@@ -43,7 +43,7 @@
 		});
 	}
 
-	var chartbar;
+	
 	// globally available
 	$(document).ready(function() {
 		requestData();

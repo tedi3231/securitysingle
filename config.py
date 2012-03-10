@@ -39,7 +39,9 @@ handlers = [
             (r"/test/testhandler",otherhandler.TestAjaxHandler),
             (r"/report/piechart",otherhandler.PieChartTestHandler),
             (r"/report/alarmpiereport",reporthandler.AlarmPieReportHandler),
+            (r"/report/alarmbarreport",reporthandler.AlarmBarReportHandler),
             (r"/report/alarmpiedata",reporthandler.AlarmReportDataHandler),
+            (r"/report/alarmbardata",reporthandler.AlarmBarReportDataHandler),
         ]
 
 settings = dict(
