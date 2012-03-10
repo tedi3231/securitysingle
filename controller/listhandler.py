@@ -54,7 +54,7 @@ class EVENTHandler(BaseHandler):
 
 class ALARMAnalyseHandler(BaseHandler):
     def get(self):        
-        self.rendergriddata('alarm_1', '报警信息', '/alarm/analyse', canAdd=False, canRemove=False, canEdit=False,showsearch=True)
+        self.rendergriddata('alarm_1', '报警信息', '/alarm/analyse', canAdd=True, canRemove=True, canEdit=False,showsearch=True)
         
     def post(self):        
         self.write(self.griddata("alarm_1"))

@@ -37,7 +37,9 @@ handlers = [
             (r"/auth/logout", basehandler.AuthLogoutHandler),
             (r"/report/test", otherhandler.ChartTestHandler),
             (r"/test/testhandler",otherhandler.TestAjaxHandler),
-            #(r"/report/test",reporthandler.TestReportHandler)
+            (r"/report/piechart",otherhandler.PieChartTestHandler),
+            (r"/report/alarmpiereport",reporthandler.AlarmPieReportHandler),
+            (r"/report/alarmpiedata",reporthandler.AlarmReportDataHandler),
         ]
 
 settings = dict(

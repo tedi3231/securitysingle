@@ -7,10 +7,33 @@ import const
 import os
 import copy
 
-author_list =  {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
-dnstypelist = {'rows':[{'name':'白域名', 'id':'1'}, {'name':'恶意域名', 'id':'2'}, {'name':'动态域名', 'id':'3'}], 'valuetext':'name', 'valuename':'id'}
-yesnolist =    {'rows':[{'name':'是','id':'1'},{'name':'否','id':'0'}],'valuetext':'name','valuename':'id'}
-modulelist =    {'rows':[{'name':'参数管理','id':'systemparam'},{'name':'报警信息','id':'alarminfo'},{'name':'警报分析','id':'alarmanalysys'},{'name':'系统管理','id':'systemmanager'},{'name':'系统状态','id':'systemstatus'}],'valuetext':'name','valuename':'id'}
+author_list = {'rows':[{'name':'  ', 'id':' '}, {'name':'tedi3231', 'id':'2'}], 'valuetext':'name', 'valuename':'id'}
+dnstypelist = {'rows':[{'name':'白域名', 'id':'1'}, {'name':'恶意域名', 'id':'2'}, {'name':'动态域名', 'id':'3'}], 
+               'valuetext':'name', 'valuename':'id'
+              }
+yesnolist =   {'rows':[{'name':'是','id':'1'},{'name':'否','id':'0'}],'valuetext':'name','valuename':'id'}
+modulelist =  {'rows':[{'name':'参数管理','id':'systemparam'},{'name':'报警信息','id':'alarminfo'},
+                       {'name':'警报分析','id':'alarmanalysys'},{'name':'系统管理','id':'systemmanager'},
+                       {'name':'系统状态','id':'systemstatus'}],
+                       'valuetext':'name','valuename':'id'
+              }
+alarmtypelist =   {'rows':[{'name':'已知','id':'1'},{'name':'未知','id':'2'}],'valuetext':'name','valuename':'id'}
+alarmlevellist =  {'rows':[{'name':'一级','id':'1'},{'name':'二级','id':'2'},{'name':'3级','id':'3'},
+                           {'name':'4级','id':'4'}],'valuetext':'name','valuename':'id'
+                  }
+
+def alarmtypeformat(alarm_type):
+    temp = [item['name']  for item in alarmtypelist['rows'] if str(item['id']) == str(alarm_type)]
+    print temp
+    if temp:
+        return temp[0]
+    return ''
+
+def alarmlevelformat(level):
+    temp = [item['name']  for item in alarmlevellist['rows'] if str(item['id']) == str(level)]
+    if temp:
+        return temp[0]
+    return ''
 
 def moduleFormat(val):
     temp = [item for item in modulelist["rows"] if item["id"]==val]
@@ -154,6 +177,7 @@ const.GLOBALPARA_SEARCH = (
 """
 const.USER_TROJAN_RULE_COLUMNS = (
     Column('id', 'id', controltype='hidden', show=False),
+    Column('troname', '木马名称'),
     Column('srcip', '木马发起地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('sport', '木马发起端口'),
     Column('dstip', '木马接收地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
@@ -161,8 +185,7 @@ const.USER_TROJAN_RULE_COLUMNS = (
     Column('offset', '特征串偏移量'),
     Column('dept', '特征串检测长度'),
     Column('proto', '协议'),
-    Column('signature', '木马特征串'),
-    Column('troname', '木马名称'),
+    Column('signature', '木马特征串'),    
     Column('isuser', '是否是用户自添加', controltype='hidden', show=False, defaultvalue='1'),
     Column('special', '控制被控端'),
     Column('desrib', '木马描述'),
@@ -181,15 +204,15 @@ ALARM
 """
 const.ALARM_COLUMNS = (
     Column('id', 'id', controltype='hidden', show=False),
-    Column('rid', 'rid', controltype='hidden', show=False, defaultvalue=0),
-    Column('type', '报警类别'),
-    Column('class', '报警级别'),
+    #Column('rid', 'rid', controltype='hidden', show=False, defaultvalue=0),
+    Column('type', '报警类别',formatter=alarmtypeformat),
+    Column('class', '报警级别',formatter=alarmlevelformat),
     Column('trojanid', '木马号'),
     Column('dip', '被控主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
-    Column('dmac', '被控主机MAC地址'),
+    Column('dmac', '被控主机MAC地址',width=150),
     Column('sip', '控制主机地址', formatter=convertIntToIp, saveformatter=convertIpToInt),
     Column('scc', '控制主机所在国家'),
-    Column('time', '报警时间',formatter=convertIntToDateStr),
+    Column('time', '报警时间',width=150,formatter=convertIntToDateStr, saveformatter=convertDateStrToInt,easyclass="easyui-datebox",),
     Column('alarm_msg', '报警描述'),
 )
 

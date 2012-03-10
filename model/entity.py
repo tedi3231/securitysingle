@@ -130,6 +130,11 @@ def query(entityName, arguments):
     datarows = db.query(rowsQuery)
     return total, datarows
 
+def querySqlStr(sql):
+    if not sql :
+        return None
+    return db.query(sql)
+
 def queryall(entityName):
     """
     Query all data rows

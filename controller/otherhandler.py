@@ -15,4 +15,8 @@ class TestAjaxHandler(BaseHandler):
         
 class ChartTestHandler(BaseHandler):
     def get(self):
-        self.render("chartbar.html")
+        self.render("report/chartbar.html")
+
+class PieChartTestHandler(BaseHandler):
+    def get(self):
+        self.render("report/piechart.html")
