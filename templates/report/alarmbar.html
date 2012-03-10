@@ -1,0 +1,137 @@
+{% extends "reportbase.html" %}
+
+{% block script %}
+
+<script type="text/javascript">
+///report/alarmbardata
+function requestData() {
+		$.ajax({
+			url : '/test/testhandler',
+			success : function(point) {
+				console.log(point);
+				var options = {
+					chart : {
+						renderTo : 'barcontainer',
+						type : 'column'
+					},
+					title : {
+						text : 'Fruit Consumption'
+					},
+					xAxis : {
+						categories : ['Apples', 'Bananas', 'Oranges']
+					},
+					yAxis : {
+						title : {
+							text : 'Fruit eaten'
+						}
+					},                    
+                    plotOptions:{
+                        column:{
+                            events:{
+                                click:function(e){openpage('警报事件分析','/alarm/analyse');}
+                            }
+                        }
+                    },
+					series : eval("("+point+")")
+				};
+				var chartbar = new Highcharts.Chart(options);
+				// call it again after one second
+				//setTimeout(requestData, 10000);
+			},
+			cache : false
+		});
+	}
+
+    function showAlarmBarChart(title,renderTo,category,data){        
+        var options = {
+					chart : {
+						renderTo : 'barcontainer',
+						type : 'column'
+					},
+					title : {
+						text : '单位时间内警报情况'
+					},
+					xAxis : {
+						categories : category
+					},
+					yAxis : {
+						title : {
+							text : '警报次数'
+						}
+					},
+                    plotOptions:{
+                        dataLabels: {
+					        enabled: true
+				        },
+				        showInLegend: true,
+                        column:{
+                            events:{
+                                click:function(e){openpage('警报事件分析','/alarm/analyse');}
+                            }
+                        }
+                    },
+					series : data
+		};
+		var chartbar = new Highcharts.Chart(options);
+    }
+
+    function requestAlarmBarData(title,renderTo,dataurl) {
+        parms = {'pietype':$("#pietype","#search_bar_alarm_report").combobox("getValue"),
+                '_xsrf' : $("input[name=_xsrf]","#search_bar_alarm_report").val()
+        };
+        $.post(dataurl,parms, function(data) {         
+            category = [];
+            rows =  [];
+            if( data ){
+                category = eval(data).category;
+                rows = eval(data).data;
+            }
+            showAlarmBarChart(title,renderTo,category,rows);
+        },"json");        
+        return false;
+    }
+
+	// globally available
+	$(document).ready(function() {
+		//requestData("警报事件态势","barcontainer","/report/alarmbardata");
+        $("#asearch","#search_bar_alarm_report").click(function(){
+            requestAlarmBarData("警报事件态势","barcontainer","/report/alarmbardata");
+            return false;
+        });
+	});
+</script>
+{% end %}
+
+{% block body %}
+    <div id="search_bar_alarm_report" class="easyui-accordion" collapsed="true">
+        <div title="查询条件" iconCls="icon-search">
+            <form method="post" id="alarm_bar_report_form">
+                {{xsrf_form_html()}}
+                <div style="margin:10px;">                    
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>时间范围</span>
+                        </div>
+                        <div class="editor-field">
+                            <select id="pietype" class="easyui-combobox">
+                                <option value="today">当天</option>
+                                <option value="currentmonth">当月</option>
+                                <option value="currentyear">当年</option>
+                            </select>
+                        </div>
+                    </div>                    
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>&nbsp;</span>
+                        </div>
+                        <div class="editor-field">
+                           <a id="asearch" href="#" iconCls="icon-search" plain="true" class="easyui-linkbutton">查询</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="clear:both;"></div>
+            <div id="barcontainer" style="width: 98%; height: 400px;margin:10px;"></div>
+        </div>
+    </div>
+{% end %}
