@@ -1,0 +1,113 @@
+{% extends "reportbase.html" %}
+
+{% block script %}
+<script type="text/javascript">
+
+function showPieChart(title,renderTo,data){
+   chart = new Highcharts.Chart({
+		chart: {
+			renderTo: renderTo,
+			plotBackgroundColor: null,
+			plotBorderWidth: null,
+			plotShadow: false
+		},
+		title: {
+			text: title
+		},
+		tooltip: {
+			formatter: function() {
+				return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+			}
+		},
+		plotOptions: {
+			pie: {
+				allowPointSelect: true,
+				cursor: 'pointer',
+				dataLabels: {
+					enabled: true
+				},
+				showInLegend: true,
+                events:{
+                    click:function(e){openpage('警报事件分析','/alarm/analyse');}
+                }
+			}
+		},
+		series: [{
+			type: 'pie',
+			name: 'Browser share',
+			data: data
+		}]
+	}); 
+}
+
+function requestData(title,renderTo,dataurl) {    
+    parms = {'pietype':$("#pietype","#search_alarm_report").combobox("getValue"),
+            'starttime':$("#starttime","#search_alarm_report").datetimebox("getText"),
+            'endtime':$("#endtime","#search_alarm_report").datetimebox("getText"),
+            '_xsrf' : $("input[name=_xsrf]","#search_alarm_report").val()
+    };
+    $.post(dataurl,parms, function(data) {
+        showPieChart(title,renderTo,data);
+    }, "json");
+    return false;
+}
+
+$(document).ready(function() {
+    $("#asearch","#search_alarm_report").click(function(){        
+        requestData("警报事件统计","piecontainer","/report/alarmpiedata");
+        return false;
+    });
+});
+</script>
+{% end %}
+
+{% block body %}
+    <div id="search_alarm_report" class="easyui-accordion" collapsed="true">
+        <div title="查询条件" iconCls="icon-search">
+            <form action="/report/alarmpiedata" method="post" id="alarm_report_form">
+                {{xsrf_form_html()}}
+                <div style="margin:10px;">                    
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>图表类型</span>
+                        </div>
+                        <div class="editor-field">
+                            <select id="pietype" class="easyui-combobox">
+                                <option value="level">级别</option>
+                                <option value="type">类型</option>
+                                <option value="trojan">木马</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>开始时间</span>
+                        </div>
+                        <div class="editor-field">
+                            <input type="text" class="easyui-datetimebox" required="true" id="starttime" />
+                        </div>
+                    </div>
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>结束时间</span>
+                        </div>
+                        <div class="editor-field">
+                            <input type="text" id="endtime" class="easyui-datetimebox" required="true"/>
+                        </div>
+                    </div>
+                    <div class="layout-onecolumn">
+                        <div class="editor-label">
+                            <span>&nbsp;</span>
+                        </div>
+                        <div class="editor-field">
+                           <a id="asearch" href="#" iconCls="icon-search" plain="true" class="easyui-linkbutton">查询</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div style="clear:both;"></div>
+<div id="piecontainer" style="width: 98%; height: 400px;margin:10px;"></div>
+        </div>
+    </div>    
+{% end %}
+
