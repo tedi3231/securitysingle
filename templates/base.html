@@ -18,7 +18,7 @@
         <link rel="alternate" href="/feed" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}"/>
         {% block head %}{% end %}
         <script language="JavaScript" type="text/javascript">
-            function openpage(name, url,hasprogress) {
+            function openpage(name, url,params,hasprogress) {
                 if($('#tt').tabs('exists', name)) {
                     $('#tt').tabs('select', name);
                 } else {
@@ -33,7 +33,8 @@
                             msg : '页面读取中.....'
                         });
                     }
-                    $('#' + name).load(url, null, function() {
+                    if(!params) params = null;
+                    $('#' + name).load(url, params, function() {
                         if( hasprogress && hasprogress==true){                        
                             $.messager.progress('close');                           
                         }                        

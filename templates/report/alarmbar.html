@@ -42,6 +42,32 @@ function requestData() {
 		});
 	}
 
+    // 获取参数
+    function getCondition(){
+        var pietype = $("#pietype","#search_bar_alarm_report").val();
+        var startTime= new Date();
+        var year = startTime.getFullYear();
+        var month = startTime.getMonth();
+        var day = startTime.getDate();
+        
+        var start = "";
+        var end = "";
+        if(pietype=='today'){
+            var temp = year + "-" + month + "-"+ day;
+            start = temp + " 00:00:00";
+            end = temp +" 23:59:59";
+        }else if(pietype=='currentmonth'){
+            start = year+"-"+month+"-01 00:00:00";
+            end =  year + "-" + month + "-" + new Date(d.getFullYear(),d.getMonth()+1,0).getDate()+" 23:59:59";
+        }else if(pietype=='currentyear'){
+            start = year+"-01-01 00:00:00";
+            end = year+"-12-30 23:59:59";
+        }
+        alert(start);
+        alert(end);
+        return "{'start_time':'"+start+"',end_time:'" +end+ "'}";
+    }
+    
     function showAlarmBarChart(title,renderTo,category,data){        
         var options = {
 					chart : {
@@ -66,7 +92,7 @@ function requestData() {
 				        showInLegend: true,
                         column:{
                             events:{
-                                click:function(e){openpage('警报事件分析','/alarm/analyse');}
+                                click:function(e){openpage('警报事件分析','/alarm/analyse',getCondition());}
                             }
                         }
                     },
@@ -89,6 +115,42 @@ function requestData() {
             showAlarmBarChart(title,renderTo,category,rows);
         },"json");        
         return false;
+    }
+
+
+
+	// globally available
+	$(document).ready(function() {
+		//requestData("警报事件态势","barcontainer","/report/alarmbardata");
+        $("#asearch","#search_bar_alarm_report").click(function(){
+            requestAlarmBarData("警报事件态势","barcontainer","/report/alarmbardata");
+            return false;
+        });
+	});
+</script>
+{% end %}
+
+{% block body %}
+        }
+        return "{'start_time':'"+startTime+"',end_time:'" +endTime+ "'}"
+    }
+
+	// globally available
+	$(document).ready(function() {
+		//requestData("警报事件态势","barcontainer","/report/alarmbardata");
+        $("#asearch","#search_bar_alarm_report").click(function(){
+            requestAlarmBarData("警报事件态势","barcontainer","/report/alarmbardata");
+            return false;
+        });
+	});
+</script>
+{% end %}
+
+{% block body %}
+        }else if(pietype=='currentyear'){
+
+        }
+        return "{'start_time':'"+startTime+"',end_time:'" +endTime+ "'}"
     }
 
 	// globally available

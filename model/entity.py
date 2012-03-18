@@ -56,18 +56,26 @@ def _makeWhereCondition(entityName, arguments):
     columnNames = [item['name'].lower() for item in const.entities[entityName]["search"]]
     columns = const.entities[entityName]["search"]
     condition = []        
-    #print entityName,columnNames,columns       
+    #print entityName,columnNames,columns      
+    #print columns
+    print "arguments %s" %arguments
     col = {}
     for arg in arguments:
         arg = arg.lower().strip()
         if arg in columnNames:
             val = arguments[arg][0]
             if not val.isspace():                    
+                #print col
                 col = [item for item in columns if item["name"] == arg][0]
+                if col.has_key('formatter') and col['formatter']:
+                    val = col['formatter'](val)
                 if col["operation"] == "like":
-                    condition.append(str.format("AND {0} like '%%{1}%%'", arg, val))
+                    condition.append(str.format("AND {0} like '%%{1}%%'", col['field'], val))
                 elif col["operation"] == "=":
-                    condition.append(str.format("AND {0} = '{1}'", arg, val))
+                    condition.append(str.format("AND {0} = '{1}'", col['field'], val))
+                else:
+                    print col['operation']
+                    condition.append(str.format("AND {0} {1} {2}",col['field'],col['operation'],val))
     if len(condition) > 0 :
         condition.insert(0, "1=1 ")
     #print condition
@@ -125,7 +133,9 @@ def query(entityName, arguments):
                                 tablename, page * rows, rows, condition)
     else:
         totalQuery = str.format("select * from {0} ", tablename)
-        rowsQuery = str.format("select * from {0} limit {1},{2}", tablename, page * rows, rows)    
+        rowsQuery = str.format("select * from {0} limit {1},{2}", tablename, page * rows, rows)   
+    print totalQuery
+    print rowsQuery
     total = db.execute_rowcount(totalQuery)
     datarows = db.query(rowsQuery)
     return total, datarows

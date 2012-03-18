@@ -107,7 +107,7 @@ const.DNSLIST_COLUMNS = (
 )
 
 const.DNSLIST_SEARCH = (
-    {'name':'dnsname', 'title':'域名', 'validType':'', 'operation':'='},
+    {'name':'dnsname', 'field':'dnsname', 'title':'域名', 'validType':'', 'operation':'='},
 )        
 
 """
@@ -121,7 +121,7 @@ const.EVILIPLIST_COLUMNS = (
 )
 
 const.EVILIPLIST_SEARCH = (
-    {'name':'startip', 'title':'开始地址', 'validType':'', 'operation':'='},
+    {'name':'startip','field':'startip', 'title':'开始地址', 'validType':'', 'operation':'=','formatter':convertIpToInt},
 )
 
 
@@ -135,7 +135,7 @@ const.TRODNS_COLUMNS = (
 )
 
 const.TRODNS_SEARCH = (
-    {'name':'dnsname', 'title':'使用过的域名', 'validType':'', 'operation':'='},
+    {'name':'dnsname','field':'dnsname', 'title':'使用过的域名', 'validType':'', 'operation':'='},
 )
 
 """
@@ -149,7 +149,7 @@ const.TROIP_COLUMNS = (
 )
 
 const.TROIP_SEARCH = (
-    {'name':'ip_addr', 'title':'IP地址', 'validType':'', 'operation':'='},
+    {'name':'ip_addr','field':'ip_addr', 'title':'IP地址', 'validType':'', 'operation':'=','formatter':convertIpToInt},
 )
 
 """
@@ -169,7 +169,7 @@ const.GLOBALPARA_COLUMNS = (
 )
 
 const.GLOBALPARA_SEARCH = (
-   {'name':'beaterror', 'title':'心跳偏差', 'validType':'', 'operation':'='},
+   {'name':'beaterror','field':'beaterror', 'title':'心跳偏差', 'validType':'', 'operation':'='},
 )
 
 """
@@ -192,10 +192,10 @@ const.USER_TROJAN_RULE_COLUMNS = (
 )
 
 const.USER_TROJAN_RULE_SEARCH = (
-   {'name':'srcip', 'title':'木马发起地址', 'validType':'', 'operation':'='},
-   {'name':'sport', 'title':'木马发起端口', 'validType':'', 'operation':'='},
-   {'name':'dstip', 'title':'木马接收地址', 'validType':'', 'operation':'='},
-   {'name':'dport', 'title':'木马接收端口', 'validType':'', 'operation':'='},
+   {'name':'srcip','field':'srcip', 'title':'木马发起地址', 'validType':'', 'operation':'=','formatter':convertIpToInt},
+   {'name':'sport','field':'sport', 'title':'木马发起端口', 'validType':'', 'operation':'='},
+   {'name':'dstip','field':'dstip', 'title':'木马接收地址', 'validType':'', 'operation':'=','formatter':convertIpToInt},
+   {'name':'dport','field':'dport', 'title':'木马接收端口', 'validType':'', 'operation':'='},
 )
 
 
@@ -217,7 +217,9 @@ const.ALARM_COLUMNS = (
 )
 
 const.ALARM_SEARCH = (
-   {'name':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
+   {'name':'type','field':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
+   {'name':'start_time','field':'time', 'title':'开始时间', 'validType':'', 'operation':'>','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox'},
+   {'name':'end_time','field':'time', 'title':'结束时间', 'validType':'', 'operation':'<','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox'},
 )
 
 """
@@ -242,7 +244,7 @@ const.EVENT_COLUMNS = (
 )
 
 const.EVENT_SEARCH = (
-   {'name':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
+   {'name':'type','field':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
 )
 
 """
@@ -258,7 +260,7 @@ const.USERS_COLUMNS = (
 )
 
 const.USERS_SEARCH = (
-    {'name':'username', 'title':'用户名', 'validType':'', 'operation':'='},
+    {'name':'username','field':'username', 'title':'用户名', 'validType':'', 'operation':'='},
 )
 
 """
@@ -276,9 +278,9 @@ const.RESOURCES_COLUMNS = (
 )
 
 const.RESOURCES_SEARCH = (
-    {'name':'Controller', 'title':'Controller', 'validType':'', 'operation':'='},
-    {'name':'Action', 'title':'Action', 'validType':'', 'operation':'='},
-    {'name':'Module', 'title':'模块', 'validType':'', 'operation':'='},
+    {'name':'Controller','field':'Controller', 'title':'Controller', 'validType':'', 'operation':'='},
+    {'name':'Action','field':'Action', 'title':'Action', 'validType':'', 'operation':'='},
+    {'name':'Module','field':'Module', 'title':'模块', 'validType':'', 'operation':'='},
 )
 
 """
@@ -295,7 +297,7 @@ const.PERMISION_COLUMNS = (
 )
 
 const.PERMISION_SEARCH = (
-    {'name':'username', 'title':'用户名称', 'validType':'', 'operation':'='},  
+    {'name':'username','field':'username', 'title':'用户名称', 'validType':'', 'operation':'='},  
 )
 
 """
@@ -308,7 +310,7 @@ const.USERS_RESOURCES_COLUMNS = (
 )
 
 const.USERS_RESOURCES_SEARCH = (
-    {'name':'id', 'title':'id', 'validType':'', 'operation':'='},  
+    {'name':'id','field':'id', 'title':'id', 'validType':'', 'operation':'='},  
 )
 
 const.LOGINFO_COLUMNS = (
@@ -318,7 +320,7 @@ const.LOGINFO_COLUMNS = (
 )
 
 const.LOGINFO_SEARCH = (
-    {'name':'content', 'title':'内容', 'validType':'', 'operation':'like'},
+    {'name':'content','field':'content', 'title':'内容', 'validType':'', 'operation':'like'},
 )
 
 const.entities = {
