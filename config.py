@@ -23,6 +23,7 @@ handlers = [
             (r"/troip/list", listhandler.TROIPHandler),
             (r"/globalpara/list", listhandler.GLOBALPARAHandler),
             (r"/alarm/list", listhandler.ALARMHandler),
+            (r"/alarmchield/list", listhandler.AlarmChieldHandler),
             (r"/event/list",listhandler.EVENTHandler),
             (r"/alarm/analyse", listhandler.ALARMAnalyseHandler),
             (r"/event/analyse",listhandler.EVENTAnalyseHandler),

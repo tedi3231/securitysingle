@@ -203,7 +203,7 @@ const.USER_TROJAN_RULE_SEARCH = (
 ALARM
 """
 const.ALARM_COLUMNS = (
-    Column('id', 'id', controltype='hidden', show=False),
+    Column('id', 'id', controltype='hidden', show=True),
     #Column('rid', 'rid', controltype='hidden', show=False, defaultvalue=0),
     Column('type', '报警类别',formatter=alarmtypeformat),
     Column('class', '报警级别',formatter=alarmlevelformat),
@@ -245,6 +245,11 @@ const.EVENT_COLUMNS = (
 
 const.EVENT_SEARCH = (
    {'name':'type','field':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
+)
+
+const.ALARM_CHIELD_COLUMNS = copy.copy(const.EVENT_COLUMNS)
+const.ALARM_CHIELD_SEARCH = (
+    {'name':'alarm_id','field':'alarm_id','title':'alarmid','validType':'','operation':'='},        
 )
 
 """
@@ -330,6 +335,7 @@ const.entities = {
     "troip": {"tablename":"TRO_IP", "columns":const.TROIP_COLUMNS, "search":const.TROIP_SEARCH},
     "globalpara": {"tablename":"GLOBALPARA", "columns":const.GLOBALPARA_COLUMNS, "search":const.GLOBALPARA_SEARCH,"aftersave":restartSnort},
     "alarm": {"tablename":"ALARM", "columns":const.ALARM_COLUMNS, "search":const.ALARM_SEARCH},
+    "alarm_chield":{"tablename":"ALARM_CHIELD_VIEW","columns":const.ALARM_CHIELD_COLUMNS,"search":const.ALARM_CHIELD_SEARCH},
     "event": {"tablename":"EVENT", "columns":const.EVENT_COLUMNS, "search":const.EVENT_SEARCH},
     "usertrojanrule": {"tablename":"USER_TROJAN_RULE", "columns":const.USER_TROJAN_RULE_COLUMNS, "search":const.USER_TROJAN_RULE_SEARCH},
     "users": {"tablename":"USERS", "columns":const.USERS_COLUMNS, "search":const.USERS_SEARCH},

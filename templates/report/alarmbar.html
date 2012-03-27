@@ -63,9 +63,9 @@ function requestData() {
             start = year+"-01-01 00:00:00";
             end = year+"-12-30 23:59:59";
         }
-        alert(start);
-        alert(end);
-        return "{'start_time':'"+start+"',end_time:'" +end+ "'}";
+        //alert(start);
+        //alert(end);
+        return "start_time="+start+"&end_time=" +end;
     }
     
     function showAlarmBarChart(title,renderTo,category,data){        

@@ -39,7 +39,8 @@ class GLOBALPARAHandler(BaseHandler):
         self.write(self.griddata("globalpara"))
 
 class ALARMHandler(BaseHandler):
-    def get(self):        
+    def get(self):      
+        print self.request.arguments
         self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False)
         
     def post(self):        
@@ -51,6 +52,14 @@ class EVENTHandler(BaseHandler):
         
     def post(self):        
         self.write(self.griddata("event"))
+
+class AlarmChieldHandler(BaseHandler):
+    #def get(self):        
+    #self.rendergriddata('alarm_chield', '警报子信息', '/alarmchield/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False)
+        
+    def post(self):        
+        #self.write("{'name':20}")
+        self.write(self.griddata("alarm_chield"))
 
 class ALARMAnalyseHandler(BaseHandler):
     def get(self):        

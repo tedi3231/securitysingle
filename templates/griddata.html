@@ -82,9 +82,25 @@
         return false;
     }
 
-    function clickRow(rowIndex) {
+    function clickRow(rowIndex,rowData) {
         //alert(rowIndex);
         //$("#{{entityname}}_children").load("/dns/list");
+        //alert("abc");
+        //alert(rowData.type);
+        $("#{{entityname}}_children").datagrid({
+            url:'/alarmchield/list?alarm_id='+rowData.id,
+            title:'', 
+            height:'300',
+            pagination:'true',
+            queryParams : {
+                '_xsrf' : $("input[name=_xsrf]").val()
+            },
+            columns:[[
+                {field:'sip',title:'sip',width:100},
+                {field:'sport',title:'sport',width:200},
+                {field:'dmac',title:'dmac',width:100}
+            ]]
+        });
         return false;
     }
 
@@ -107,7 +123,8 @@
         $('#{{entityname}}').datagrid({
             queryParams : {
                 '_xsrf' : $("input[name=_xsrf]").val()
-            }
+            },
+            height:'550'
         });
 
         $("div#search_{{entityname}} #asearch").click(function() {

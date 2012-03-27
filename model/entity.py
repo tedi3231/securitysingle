@@ -53,7 +53,10 @@ def _makeUpdateSql(entityName, arguments):
 
 
 def _makeWhereCondition(entityName, arguments):
+    print entityName
+    #print const.entities[entityName]['search']
     columnNames = [item['name'].lower() for item in const.entities[entityName]["search"]]
+    print columnNames
     columns = const.entities[entityName]["search"]
     condition = []        
     #print entityName,columnNames,columns      
