@@ -40,8 +40,9 @@ class GLOBALPARAHandler(BaseHandler):
 
 class ALARMHandler(BaseHandler):
     def get(self):      
-        print self.request.arguments
-        self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False)
+        #print self.request.arguments
+        self.rendergriddata('alarm', '报警信息', '/alarm/list', canAdd=False, canRemove=False, canEdit=False,showsearch=False,hasChield=True
+                            ,chieldUrl="/alarmchield/list")
         
     def post(self):        
         self.write(self.griddata("alarm"))

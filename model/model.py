@@ -217,9 +217,9 @@ const.ALARM_COLUMNS = (
 )
 
 const.ALARM_SEARCH = (
-   {'name':'type','field':'type', 'title':'报警类别', 'validType':'', 'operation':'='},
-   {'name':'start_time','field':'time', 'title':'开始时间', 'validType':'', 'operation':'>','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox'},
-   {'name':'end_time','field':'time', 'title':'结束时间', 'validType':'', 'operation':'<','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox'},
+   {'name':'type','field':'type', 'title':'报警类别', 'validType':'', 'operation':'=','defaultvalue':None},
+   {'name':'start_time','field':'time', 'title':'开始时间', 'validType':'', 'operation':'>','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox','defaultvalue':None},
+   {'name':'end_time','field':'time', 'title':'结束时间', 'validType':'', 'operation':'<','formatter':convertDateStrToInt,'easyuiclass':'easyui-datetimebox','defaultvalue':None},
 )
 
 """

@@ -7,7 +7,11 @@
 		        {{col["title"]}}
 	        </div>
 	        <div class="editor-field">
-		        <input type="text" id="{{col['name']}}" class="easyui-validdatebox {% if col.has_key('easyuiclass') %} {{col['easyuiclass']}} {%end%} " name="{{col['name']}}" validType="{{col['validType']}}" />
+		        <input type="text" 
+		           id="{{col['name']}}" class="easyui-validdatebox {% if col.has_key('easyuiclass') %} {{col['easyuiclass']}} {%end%} "
+		           name="{{col['name']}}" validType="{{col['validType']}}"
+		           {%if col.has_key('defaultvalue') and col['defaultvalue']%} value="{{col['defaultvalue']}}" {%end%}
+		            />
 	        </div>   
         </div>
         {% end %}   

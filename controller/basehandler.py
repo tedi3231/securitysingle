@@ -64,10 +64,10 @@ class BaseHandler(tornado.web.RequestHandler):
     def writeLog(self,action,entityname,msg):
         content = str.format("{0} at {1} {4} {2},values is {3}",self.get_current_user(),datetime.now().isoformat(),
                              const.entities[entityname]['tablename'],msg,action)
-        print content
+        #print content
         arguments = {"content":[content],"createtime":[datetime.now()]}
         result = entity.createEntity("loginfo", arguments)
-        print result
+        #print result
     
     def griddata(self, entityName):
         total, datarows = entity.query(entityName, self.request.arguments)
@@ -78,15 +78,25 @@ class BaseHandler(tornado.web.RequestHandler):
         return tornado.escape.json_encode(gd)
     
     def rendergriddata(self, entityname, title, url, canAdd=True, canEdit=True, canRemove=True,showsearch=True,
-                       addAction="/data/create",editAction="/data/edit",removeAction="/data/remove"):
+                       addAction="/data/create",editAction="/data/edit",removeAction="/data/remove",hasChield=None,chieldUrl=None):
         columns = const.entities[entityname]['columns']
-        search_columns = const.entities[entityname]['search']
+        search_columns = const.entities[entityname]['search']        
+        search_values = self.request.arguments
+        #print search_values
+        #print search_columns
+        for key in search_values:
+            #search_values[key] = search_values[key][0]
+            for col in search_columns:
+                if col['name'] == key:                    
+                    col['defaultvalue']= search_values[key][0]                    
+                    break
+        #print search_columns    
         if showsearch <> True:
             search_columns = []
         self.render("griddata.html", entityname=entityname, url=url, title=title,
                     rownumbers="true", pagination="true", columns=columns,
                     search_columns=search_columns, canAdd=canAdd, canEdit=canEdit, canRemove=canRemove,
-                    addAction=addAction,editAction=editAction,removeAction=removeAction
+                    addAction=addAction,editAction=editAction,removeAction=removeAction,hasChield=hasChield,chieldUrl =chieldUrl
                    )
 
 class RemoveHandler(BaseHandler):
@@ -105,7 +115,7 @@ class EditHandler(BaseHandler):
         entityid = self.get_argument("id", "")
         row = entity.getEntity(entityname, entityid)
         row = self.beforeshowentityformat(entityname, row)
-        print row
+        #print row
         columns = const.entities[entityname]['columns']        
         return self.render("edit.html", entityname=entityname, columns=columns, entity=row)
 

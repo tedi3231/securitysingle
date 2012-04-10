@@ -6,7 +6,7 @@ import tornado.web
 
 class SearchModule(tornado.web.UIModule):
     def render(self, model):
-        print model
+        #print model
         return self.render_string("modules/search.html", model=model)
 
 '''

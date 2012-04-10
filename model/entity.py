@@ -53,15 +53,15 @@ def _makeUpdateSql(entityName, arguments):
 
 
 def _makeWhereCondition(entityName, arguments):
-    print entityName
+    #print entityName
     #print const.entities[entityName]['search']
     columnNames = [item['name'].lower() for item in const.entities[entityName]["search"]]
-    print columnNames
+    #print columnNames
     columns = const.entities[entityName]["search"]
     condition = []        
     #print entityName,columnNames,columns      
     #print columns
-    print "arguments %s" %arguments
+    #print "arguments %s" %arguments
     col = {}
     for arg in arguments:
         arg = arg.lower().strip()
@@ -90,8 +90,8 @@ def createEntity(entityName, arguments):
     if result["result"] != "success":
         return result            
     sql, vals = _makeInsertSql(entityName, arguments)
-    print sql
-    print vals  
+    #print sql
+    #print vals  
     if db.execute(sql, *vals.values()) < 0 :
         result["result"] = 'failed'
     return result
@@ -137,8 +137,8 @@ def query(entityName, arguments):
     else:
         totalQuery = str.format("select * from {0} ", tablename)
         rowsQuery = str.format("select * from {0} limit {1},{2}", tablename, page * rows, rows)   
-    print totalQuery
-    print rowsQuery
+    #print totalQuery
+    #print rowsQuery
     total = db.execute_rowcount(totalQuery)
     datarows = db.query(rowsQuery)
     return total, datarows
