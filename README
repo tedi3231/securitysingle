@@ -1,4 +1,4 @@
-Running the Tornado Blog example app
+testRunning the Tornado Blog example app
 ====================================
 This demo is a simple blogging engine that uses MySQL to store posts and
 Google Accounts for author authentication. Since it depends on MySQL, you
