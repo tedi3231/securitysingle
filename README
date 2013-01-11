@@ -51,7 +51,5 @@ need to set up MySQL and the database schema for the demo to run.
    authentication.
 
    Currently the first user to connect will automatically be given the
+   There no money!
    ability to create and edit posts. 
-
-   Once you've created one blog post, subsequent users will not be
-   prompted to sign in.
